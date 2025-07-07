@@ -1,0 +1,334 @@
+/*--------------------------------------------------------------
+# Animation Keyframes
+--------------------------------------------------------------*/
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-15px);
+    }
+    60% {
+        transform: translateY(-7px);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulseNode {
+    0% {
+        r: 7;
+        opacity: 1;
+    }
+    50% {
+        r: 8;
+        opacity: 0.8;
+    }
+    100% {
+        r: 7;
+        opacity: 1;
+    }
+}
+
+@keyframes flashConnection {
+    0% {
+        stroke-opacity: 0.3;
+        stroke-width: 1;
+    }
+    50% {
+        stroke-opacity: 1;
+        stroke-width: 2.5;
+    }
+    100% {
+        stroke-opacity: 0.3;
+        stroke-width: 1;
+    }
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blinkCaret {
+    from, to {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.blinking-cursor {
+    display: inline-block;
+    animation: blinkCaret 0.8s step-end infinite;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-left: 3px;
+}
+
+/*--------------------------------------------------------------
+# Neural Network Animations
+--------------------------------------------------------------*/
+.neural-network .node {
+    fill: var(--primary-color);
+    stroke: var(--bg-color);
+    stroke-width: 2;
+    transition: fill 0.3s ease, r 0.3s ease;
+}
+
+.neural-network .connection {
+    stroke: var(--accent-color);
+    stroke-width: 1.5;
+    opacity: 0.4;
+    transition: stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease;
+}
+
+.neural-network .active-node {
+    fill: var(--accent-color) !important;
+    r: 9 !important;
+}
+
+.neural-network .active-connection {
+    stroke: var(--accent-color) !important;
+    stroke-width: 2.5 !important;
+    opacity: 1 !important;
+    animation: flashConnection 1.5s infinite;
+}
+
+.neural-network .pulse-animation {
+    animation: pulse 0.6s ease-in-out;
+}
+
+/*--------------------------------------------------------------
+# Loading Animation
+--------------------------------------------------------------*/
+.loading-bar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 8px;
+    width: 0%;
+    max-width: 300px;
+    background: linear-gradient(90deg, 
+        rgba(61, 90, 254, 0.8), 
+        rgba(108, 99, 255, 0.9),
+        rgba(66, 133, 244, 0.8)
+    );
+    background-size: 200% 100%;
+    z-index: 9999;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.7);
+    animation: shimmer 2s infinite linear;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(108, 99, 255, 0.4);
+}
+
+/* Tech-themed loading bar with digital circuit pattern */
+.loading-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(90deg, transparent 0%, transparent 95%, rgba(255,255,255,0.3) 100%),
+        linear-gradient(90deg, transparent 0%, transparent 80%, rgba(255,255,255,0.5) 100%),
+        linear-gradient(90deg, transparent 0%, transparent 70%, rgba(255,255,255,0.3) 100%);
+    background-size: 20px 100%, 15px 100%, 30px 100%;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.page-loading::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    z-index: 9998;
+}
+
+/* Flashy animations for loading screens */
+.page-loading .loading-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    animation: loadingGlint 1.2s infinite;
+    z-index: 10000;
+}
+
+@keyframes loadingGlint {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Particle glints */
+.loading-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+.loading-particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: rgba(108, 99, 255, 0.8);
+    border-radius: 50%;
+    top: 50%;
+    animation: particleFloat 2s infinite ease-out;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.7);
+}
+
+@keyframes particleFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-20px) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px) scale(0.5);
+    }
+}
+
+/*--------------------------------------------------------------
+# Cursor Effect
+--------------------------------------------------------------*/
+.custom-cursor {
+    cursor: none;
+}
+
+.cursor-follower {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(108, 99, 255, 0.2);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
+}
+
+.cursor-dot {
+    position: fixed;
+    width: 5px;
+    height: 5px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+}
+
+.cursor-follower.active {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(108, 99, 255, 0.3);
+    border-color: rgba(108, 99, 255, 0.5);
+}
+
+.cursor-dot.active {
+    width: 8px;
+    height: 8px;
+}

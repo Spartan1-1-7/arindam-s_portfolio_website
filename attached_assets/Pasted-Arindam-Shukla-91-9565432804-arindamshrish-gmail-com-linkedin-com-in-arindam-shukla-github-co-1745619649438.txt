@@ -1,0 +1,62 @@
+Arindam Shukla
++91 9565432804 | arindamshrish@gmail.com | linkedin.com/in/arindam-shukla | github.com/Spartan1-1-7
+Education
+Bachelor of Technology, University of Lucknow
+Computer Science and Technology with Specialization in Artificial Intelligence
+Delhi Public School, Jankipuram
+Lucknow, India
+November 2022 – Present
+Lucknow, India
+94.6% in Class 12 Central Board of Secondary Education
+Experience
+Team Lead, Web-Development and Design Team
+Dec 2022 – Present
+Training and Placement Cell, Faculty of Engineering and Technology, University of Lucknow
+Lucknow, India
+• Orchestrated a team of 8 to revamp web content for placement drives, which resulted in a 25% increase in student
+participation and a 15% rise in corporate engagement.
+Team Lead (Intern), Graphic Designing and Video Editing Team
+May 2023 – July 2023
+Brain Bytes
+Lucknow, India
+• Led and mentored a team of 5 creatives, managing end-to-end content creation workflows, task delegation, and
+performance tracking to ensure timely delivery of high-quality visual assets aligned with company goals.
+Projects
+MathInk | Python, Keras, NumPy,Pandas, TensorFlow, OpenCV, Django GitHub-Repo
+April 2025
+• Built a CNN model to solve math equations from images, using OpenCV for preprocessing, Keras/TensorFlow for
+prediction and evaluation, and a Django-based frontend/backend for smooth user interaction.
+PetVision | Python, Keras, TensorFlow, NumPy, Pandas, CNN GitHub-Repo
+March 2025
+• Developed a CNN-based image classifier with data preprocessing and hyperparameter tuning, achieving 80%
+accuracy on the Kaggle Cats and Dogs dataset, and deployed a prediction API for real-time inference.
+Medical Chatbot | Chainlit, Python, NLP, LangChain, FAISS, Hugging Face GitHub-Repo
+September 2024
+• Created an NLP-based medical chatbot using Chainlit, LangChain, Hugging Face, and FAISS, with SQL querying,
+data preprocessing, and model evaluation for accurate, context-aware health responses.
+Seametry | pandas, NumPy, Matplotlib, Seaborn, Scikit-learn GitHub-Repo
+June 2024
+• Designed a predictive model using Linear Regression and SVM with 85% accuracy to estimate oceanic salinity
+fromtemperature data, applying EDA, preprocessing, and evaluation on 50,000+ Kaggle entries.
+Insight AI: HackoFiesta Project | Seaborn, Scikit-learn, MongoDB GitHub-Repo
+April 2024
+• Optimized business operations by developing predictive models with Scikit-learn, applying preprocessing,
+evaluation, and tuning, and building a scalable system that improved efficiency and increased market share by 15%.
+Technical Skills
+Languages: Python, C/C++, Java (beginner level), SQL, DBMS
+Developer Tools: Git, GitHub, VS Code, Visual Studio, Jupyter Notebooks, PyCharm, Power BI, Excel
+Libraries & Frameworks: Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn, Django, Keras, TensorFlow, OpenCV
+(cv2), Chainlit, LangChain, Hugging Face, FAISS
+Concepts & Techniques: AI, ML, CNN, NLP, EDA, Data Preprocessing, Model Evaluation, Hyperparameter Tuning
+Operating Systems & Tools: Linux, Bash, Linux CLI, Shell Scripting, AWS, Google Cloud, Cloud Computing
+Soft Skills: Clear Communication, Quick Adaptation, Deadline Management, Thoughtful Approach, Peer Support.
+Achievements
+Qualified GATE-DA 2025
+March 2025
+Data Science and Artificial Intelligence | RANK: 6505
+Qualified for Smart India HackathonNovember 2024
+Qualified at University levelLucknow, India
+Qualified for the Penultimate Round of Hackofiesta.
+Hackathon held at IIIT Lucknow
+April 2024
+Lucknow, India

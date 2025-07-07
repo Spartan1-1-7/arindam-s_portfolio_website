@@ -1,0 +1,170 @@
+{% extends 'layout.html' %}
+
+{% block title %}About Me - Arindam Shukla{% endblock %}
+
+{% block content %}
+<!-- About Hero Section -->
+<section class="about-hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="about-hero-content">
+                    <h1 class="display-4 fw-bold">About <span class="highlight">Me</span></h1>
+                    <p class="lead">Computer Science Student specializing in AI & ML</p>
+                    <div class="about-social">
+                        <a href="https://github.com/{{ info.github.split('/')[1] }}" target="_blank" class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://{{ info.linkedin }}" target="_blank" class="social-icon">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="mailto:{{ info.email }}" class="social-icon">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1487700160041-babef9c3cb55" alt="Professional portrait" class="img-fluid rounded shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bio Section -->
+<section class="bio-section section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto" data-aos="fade-up">
+                <div class="bio-content">
+                    <h2>Who I Am</h2>
+                    <div class="underline mb-4"></div>
+                    <p class="bio-text">
+                        I'm Arindam Shukla, a Computer Science student specializing in Artificial Intelligence. 
+                        I'm passionate about developing intelligent systems that can solve real-world problems.
+                        My technical focus includes machine learning, deep learning, computer vision, and natural language processing.
+                    </p>
+                    <p class="bio-text">
+                        Throughout my academic journey, I've developed a strong foundation in programming, data structures, 
+                        algorithms, and advanced AI concepts. I love working on projects that challenge me to apply these skills
+                        in creative ways, whether that's building image recognition systems, predictive models, or NLP applications.
+                    </p>
+                    <p class="bio-text">
+                        When I'm not coding or working on AI projects, I enjoy participating in hackathons, contributing to open-source 
+                        projects, and staying up-to-date with the latest advancements in technology. I'm a firm believer in continuous 
+                        learning and always seek opportunities to expand my knowledge and skill set.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Education Section -->
+<section class="education-section section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Education</h2>
+            <div class="underline"></div>
+        </div>
+        
+        <div class="timeline">
+            {% for edu in education %}
+            <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>{{ edu.degree }}</h3>
+                    <h4>{{ edu.institution }}</h4>
+                    <p class="timeline-date">{{ edu.period if edu.period else "" }}</p>
+                    <p>{{ edu.field }}</p>
+                    {% if edu.achievement %}
+                    <p><strong>Achievement:</strong> {{ edu.achievement }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Work Experience Section -->
+<section class="experience-section section-padding">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Work Experience</h2>
+            <div class="underline"></div>
+        </div>
+        
+        <div class="timeline">
+            {% for exp in experiences %}
+            <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>{{ exp.title }}</h3>
+                    <h4>{{ exp.company }}</h4>
+                    <p class="timeline-date">{{ exp.period }} | {{ exp.location }}</p>
+                    <p>{{ exp.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Achievements Section -->
+<section class="achievements-section section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Achievements</h2>
+            <div class="underline"></div>
+        </div>
+        
+        <div class="row">
+            {% for achievement in achievements %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>{{ achievement.title }}</h3>
+                    <p class="achievement-date">{{ achievement.date }}</p>
+                    <p>{{ achievement.description }}</p>
+                    {% if achievement.location %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ achievement.location }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Resume Section -->
+<section class="resume-section section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center" data-aos="fade-up">
+                <h2>My Resume</h2>
+                <div class="underline mx-auto mb-4"></div>
+                <p>Want to know more about my professional journey? Download my resume for a detailed overview of my skills, experience, and achievements.</p>
+                <a href="{% url 'portfolio:download_resume' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-download me-2"></i> Download Resume
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="cta-section section-padding bg-light">
+    <div class="container">
+        <div class="cta-content text-center" data-aos="zoom-in">
+            <h2>Let's Connect</h2>
+            <p>Interested in working together or have questions about my experience? Get in touch!</p>
+            <a href="{% url 'portfolio:contact' %}" class="btn btn-primary mt-4">Contact Me</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends 'layout.html' %}
+
+{% block title %}Arindam Shukla - AI/ML Specialist{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold animated-text">Hello, I'm <span class="highlight">Arindam Shukla</span></h1>
+                    <p class="lead typing-text">AI/ML Specialist & Computer Science Student<span class="blinking-cursor">|</span></p>
+                    <p class="hero-description">Specializing in Machine Learning, Deep Learning, and Data Science solutions.</p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'portfolio:all_projects' %}" class="btn btn-primary me-3">View Projects</a>
+                        <a href="{% url 'portfolio:contact' %}" class="btn btn-outline-primary">Contact Me</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000">
+                <div class="hero-image">
+                    <div class="ai-visualization">
+                        <svg viewBox="0 0 800 600" class="neural-network">
+                            <!-- Input Layer -->
+                            <g class="input-layer">
+                                <circle cx="150" cy="100" r="15" class="node" />
+                                <circle cx="150" cy="200" r="15" class="node" />
+                                <circle cx="150" cy="300" r="15" class="node" />
+                                <circle cx="150" cy="400" r="15" class="node" />
+                                <circle cx="150" cy="500" r="15" class="node" />
+                            </g>
+                            
+                            <!-- Hidden Layer 1 -->
+                            <g class="hidden-layer-1">
+                                <circle cx="300" cy="150" r="15" class="node" />
+                                <circle cx="300" cy="250" r="15" class="node" />
+                                <circle cx="300" cy="350" r="15" class="node" />
+                                <circle cx="300" cy="450" r="15" class="node" />
+                            </g>
+                            
+                            <!-- Hidden Layer 2 -->
+                            <g class="hidden-layer-2">
+                                <circle cx="450" cy="200" r="15" class="node" />
+                                <circle cx="450" cy="300" r="15" class="node" />
+                                <circle cx="450" cy="400" r="15" class="node" />
+                            </g>
+                            
+                            <!-- Output Layer -->
+                            <g class="output-layer">
+                                <circle cx="600" cy="250" r="15" class="node" />
+                                <circle cx="600" cy="350" r="15" class="node" />
+                            </g>
+                            
+                            <!-- Connections will be drawn with JavaScript -->
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section section-padding">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>About Me</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1612066473428-fb6833a0d855" alt="AI/ML Visualization" class="img-fluid rounded shadow-lg">
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="about-content">
+                    <h3>Computer Science Student specializing in AI & ML</h3>
+                    <p>{{ info.bio }}</p>
+                    <div class="education-item">
+                        <h4>Education</h4>
+                        <p><i class="fas fa-graduation-cap"></i> Bachelor of Technology in Computer Science and Technology with Specialization in Artificial Intelligence</p>
+                        <p><i class="fas fa-university"></i> University of Lucknow</p>
+                    </div>
+                    <div class="about-buttons">
+                        <a href="{% url 'portfolio:about' %}" class="btn btn-outline-primary">Learn More</a>
+                        <a href="{% url 'portfolio:download_resume' %}" class="btn btn-primary ms-3">Download Resume</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects -->
+<section class="projects-section section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Featured Projects</h2>
+            <div class="underline"></div>
+            <p>Explore some of my recent AI and ML projects</p>
+        </div>
+        
+        <div class="row">
+            {% for project in featured_projects %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="{{ project.image }}" alt="{{ project.title }}" class="img-fluid">
+                        <div class="project-overlay">
+                            <div class="project-category">{{ project.category }}</div>
+                        </div>
+                    </div>
+                    <div class="project-details">
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.description|truncatechars:100 }}</p>
+                        <div class="project-tech">
+                            {% for tech in project.tech_list|slice:":3" %}
+                            <span class="tech-badge">{{ tech }}</span>
+                            {% endfor %}
+                            {% if project.tech_list|length > 3 %}
+                            <span class="tech-badge">+More</span>
+                            {% endif %}
+                        </div>
+                        <div class="project-links">
+                            <a href="{{ project.github }}" target="_blank" class="project-link">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                            <a href="{% url 'portfolio:project_detail' project.id %}" class="project-link">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'portfolio:all_projects' %}" class="btn btn-primary">View All Projects</a>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="skills-section section-padding">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Technical Skills</h2>
+            <div class="underline"></div>
+            <p>My proficiency levels in various technologies and tools</p>
+        </div>
+        
+        <div class="row">
+            {% for skill in skills %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="skill-card">
+                    <div class="skill-icon-wrapper">
+                        <i class="{{ skill.icon }} skill-icon"></i>
+                    </div>
+                    <div class="skill-content">
+                        <h4>{{ skill.name }}</h4>
+                        <p class="skill-category">{{ skill.category }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Experience Section -->
+<section class="experience-section section-padding bg-light">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Work Experience</h2>
+            <div class="underline"></div>
+        </div>
+        
+        <div class="timeline">
+            {% for exp in experiences %}
+            <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3>{{ exp.title }}</h3>
+                    <h4>{{ exp.company }}</h4>
+                    <p class="timeline-date">{{ exp.period }} | {{ exp.location }}</p>
+                    <p>{{ exp.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Achievements Section -->
+<section class="achievements-section section-padding">
+    <div class="container">
+        <div class="section-title text-center" data-aos="fade-up">
+            <h2>Achievements</h2>
+            <div class="underline"></div>
+        </div>
+        
+        <div class="row">
+            {% for achievement in achievements %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="{{ achievement.icon }}"></i>
+                    </div>
+                    <h3>{{ achievement.title }}</h3>
+                    <p class="achievement-date">{{ achievement.date }}</p>
+                    <p>{{ achievement.description }}</p>
+                    {% if achievement.location %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ achievement.location }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="cta-section section-padding">
+    <div class="container">
+        <div class="cta-content text-center" data-aos="zoom-in">
+            <h2>Let's Work Together</h2>
+            <p>Interested in collaborating on a project or have any questions?</p>
+            <a href="{% url 'portfolio:contact' %}" class="btn btn-primary mt-4">Get In Touch</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize any custom JS for the homepage
+        console.log('Homepage loaded successfully');
+    });
+</script>
+{% endblock %}
