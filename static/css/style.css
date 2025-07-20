@@ -90,11 +90,22 @@ body[data-theme="dark"] {
     --dark-color: #EFEFEF;
 }
 
-/* Force dark theme application */
+/* Force dark theme application with stronger selectors */
 [data-theme="dark"] body,
 body[data-theme="dark"] {
     background-color: #121212 !important;
     color: #E0E0E0 !important;
+}
+
+/* Add transitions for theme switching */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+/* Ensure all elements inherit theme colors */
+[data-theme="dark"] *,
+body[data-theme="dark"] * {
+    border-color: var(--border-color) !important;
 }
 
 [data-theme="dark"] .hero-section,
@@ -301,6 +312,13 @@ a:hover {
     right: 20px;
     z-index: 1050;
     transition: all var(--transition-base);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .theme-toggle {
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 /* Desktop: Position away from navbar */
@@ -325,12 +343,14 @@ a:hover {
     color: var(--text-color);
     font-size: 1.5rem;
     cursor: pointer;
-    padding: 8px;
+    padding: 12px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color var(--transition-base);
+    transition: all var(--transition-base);
+    width: 48px;
+    height: 48px;
 }
 
 .theme-toggle button:hover {

@@ -5,6 +5,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
     
+    console.log('DOM Content Loaded - Starting initialization');
+    
     // Initialize AOS with faster duration
     AOS.init({
         duration: 600,  // Reduced from 800 for faster animations
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initParticles();
     
     // Initialize the theme switcher
+    console.log('Initializing theme switcher...');
     initThemeSwitcher();
     
     // Initialize the navigation
@@ -34,8 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initCursorEffect();
     console.log("Cursor effect initialized");
     
-    // Initialize page transition
-    initPageTransition();
+    // Skills are now static cards, no progress animation needed
     
     // Log homepage loaded
     if (document.querySelector('.hero-section')) {
@@ -64,58 +66,66 @@ function initThemeSwitcher() {
     const themeButton = document.getElementById('theme-button');
     const themeIcon = document.getElementById('theme-icon');
     
+    console.log('Theme button:', themeButton);
+    console.log('Theme icon:', themeIcon);
+    
+    if (!themeButton || !themeIcon) {
+        console.error('Theme toggle elements not found');
+        return;
+    }
+    
     // Check for saved user preference
     const savedTheme = localStorage.getItem('theme');
     
     // Set initial theme based on saved preference or default to light theme
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme, themeIcon);
-    } else {
-        // Default to light theme 
-        const initialTheme = 'light';
-        document.documentElement.setAttribute('data-theme', initialTheme);
-        updateThemeIcon(initialTheme, themeIcon);
-    }
+    const initialTheme = savedTheme || 'light';
+    setTheme(initialTheme);
+    updateThemeIcon(initialTheme, themeIcon);
     
     // Add theme toggle event listener
-    if (themeButton) {
-        themeButton.addEventListener('click', function() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            // Set the new theme
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            // Update the icon
-            updateThemeIcon(newTheme, themeIcon);
-            
-            // Log theme change for debugging
-            console.log('Theme changed to:', newTheme);
-            
-            // Force repaint to apply theme changes properly
-            document.body.style.display = 'none';
-            document.body.offsetHeight; // Trigger a reflow
-            document.body.style.display = '';
-            
-            // Reset and re-initialize particles when theme changes to ensure correct colors
-            if (window.pJSDom && window.pJSDom.length > 0) {
-                window.pJSDom[0].pJS.fn.vendors.destroypJS();
-                window.pJSDom = [];
-                setTimeout(() => {
-                    initParticles();
-                }, 50);
-            }
-            
-            // Also refresh neural network connections if on homepage
-            if (document.querySelector('.neural-network')) {
-                setTimeout(() => {
-                    initNeuralNetwork();
-                }, 100);
-            }
-        });
-    }
+    themeButton.addEventListener('click', function() {
+        console.log('Theme button clicked');
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        console.log('Switching from', currentTheme, 'to', newTheme);
+        
+        // Set the new theme
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update the icon
+        updateThemeIcon(newTheme, themeIcon);
+        
+        // Reset and re-initialize particles when theme changes to ensure correct colors
+        if (window.pJSDom && window.pJSDom.length > 0) {
+            window.pJSDom[0].pJS.fn.vendors.destroypJS();
+            window.pJSDom = [];
+            setTimeout(() => {
+                initParticles();
+            }, 50);
+        }
+        
+        // Also refresh neural network connections if on homepage
+        if (document.querySelector('.neural-network')) {
+            setTimeout(() => {
+                initNeuralNetwork();
+            }, 100);
+        }
+    });
+}
+
+function setTheme(theme) {
+    console.log('Setting theme to:', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    
+    // Force a style recalculation
+    document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+    
+    // Add the theme class to the body for additional styling
+    document.body.classList.remove('theme-light', 'theme-dark');
+    document.body.classList.add(`theme-${theme}`);
 }
 
 function updateThemeIcon(theme, iconElement) {
@@ -395,16 +405,34 @@ function initNeuralNetwork() {
     const neuralNetwork = document.querySelector('.neural-network');
     
     if (neuralNetwork) {
-        // Define node groups
-        const inputLayer = document.querySelectorAll('.input-layer circle');
-        const hiddenLayer1 = document.querySelectorAll('.hidden-layer-1 circle');
-        const hiddenLayer2 = document.querySelectorAll('.hidden-layer-2 circle');
-        const outputLayer = document.querySelectorAll('.output-layer circle');
+        // Clear existing content
+        neuralNetwork.innerHTML = '';
+        
+        // Create the neural network layers
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.setAttribute('viewBox', '0 0 400 200');
+        
+        // Create layer groups
+        createLayer(svg, 60, 3, 'input-layer');
+        createLayer(svg, 150, 4, 'hidden-layer-1');
+        createLayer(svg, 240, 4, 'hidden-layer-2');
+        createLayer(svg, 330, 2, 'output-layer');
+        
+        neuralNetwork.appendChild(svg);
+        
+        // Get all nodes after adding to DOM
+        const inputLayer = svg.querySelectorAll('.input-layer circle');
+        const hiddenLayer1 = svg.querySelectorAll('.hidden-layer-1 circle');
+        const hiddenLayer2 = svg.querySelectorAll('.hidden-layer-2 circle');
+        const outputLayer = svg.querySelectorAll('.output-layer circle');
         
         // Create connections between layers
-        const connections = createConnections(inputLayer, hiddenLayer1, neuralNetwork);
-        connections.push(...createConnections(hiddenLayer1, hiddenLayer2, neuralNetwork));
-        connections.push(...createConnections(hiddenLayer2, outputLayer, neuralNetwork));
+        const connections = createConnections(inputLayer, hiddenLayer1, svg);
+        connections.push(...createConnections(hiddenLayer1, hiddenLayer2, svg));
+        connections.push(...createConnections(hiddenLayer2, outputLayer, svg));
         
         // Animate nodes
         animateNodes(inputLayer);
@@ -416,6 +444,8 @@ function initNeuralNetwork() {
         setInterval(() => {
             highlightRandomPath(inputLayer, hiddenLayer1, hiddenLayer2, outputLayer, connections);
         }, 3000);
+        
+        console.log('Neural network initialized');
     }
 }
 
@@ -453,6 +483,26 @@ function createConnections(fromLayer, toLayer, parent) {
     }
     
     return createdConnections;
+}
+
+function createLayer(parent, x, nodeCount, className) {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.setAttribute('class', className);
+    
+    const spacing = 160 / (nodeCount - 1);
+    const startY = 20;
+    
+    for (let i = 0; i < nodeCount; i++) {
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute('cx', x);
+        circle.setAttribute('cy', startY + (i * spacing));
+        circle.setAttribute('r', 7);
+        circle.setAttribute('class', 'node');
+        group.appendChild(circle);
+    }
+    
+    parent.appendChild(group);
+    return group;
 }
 
 function animateNodes(nodes) {
@@ -522,6 +572,91 @@ function highlightRandomPath(inputLayer, hiddenLayer1, hiddenLayer2, outputLayer
             setTimeout(() => node.classList.remove('pulse-animation'), 1000);
         }, delay);
         delay += 300;
+    });
+}
+
+/*--------------------------------------------------------------
+# Skills Progress Animation
+--------------------------------------------------------------*/
+function initSkillsProgress() {
+    const skillProgressItems = document.querySelectorAll('.skill-progress-item');
+    
+    if (skillProgressItems.length === 0) return;
+    
+    // Create intersection observer for scroll-triggered animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const progressItem = entry.target;
+                const progressBar = progressItem.querySelector('.progress-bar');
+                const progressFill = progressItem.querySelector('.progress-fill');
+                const percentage = progressBar.getAttribute('data-percentage');
+                
+                // Add animation class and set width
+                progressItem.classList.add('animate');
+                
+                // Animate progress fill
+                setTimeout(() => {
+                    progressFill.style.width = percentage + '%';
+                }, 200);
+                
+                // Unobserve after animation
+                observer.unobserve(progressItem);
+            }
+        });
+    }, {
+        threshold: 0.3, // Trigger when 30% of element is visible
+        rootMargin: '0px 0px -50px 0px' // Trigger slightly before element comes into view
+    });
+    
+    // Observe all skill progress items
+    skillProgressItems.forEach(item => {
+        observer.observe(item);
+    });
+    
+    // Add hover effects for better interactivity
+    skillProgressItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            const progressFill = item.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.transform = 'scaleY(1.2)';
+                progressFill.style.transition = 'transform 0.3s ease';
+            }
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            const progressFill = item.querySelector('.progress-fill');
+            if (progressFill) {
+                progressFill.style.transform = 'scaleY(1)';
+            }
+        });
+    });
+    
+    // Handle tab switching to re-trigger animations
+    const skillTabs = document.querySelectorAll('[data-bs-toggle="pill"]');
+    skillTabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', (event) => {
+            const targetPaneId = event.target.getAttribute('data-bs-target');
+            const targetPane = document.querySelector(targetPaneId);
+            
+            if (targetPane) {
+                const progressItems = targetPane.querySelectorAll('.skill-progress-item');
+                progressItems.forEach(item => {
+                    const progressBar = item.querySelector('.progress-bar');
+                    const progressFill = item.querySelector('.progress-fill');
+                    const percentage = progressBar.getAttribute('data-percentage');
+                    
+                    // Reset and re-animate
+                    progressFill.style.width = '0%';
+                    item.classList.remove('animate');
+                    
+                    setTimeout(() => {
+                        item.classList.add('animate');
+                        progressFill.style.width = percentage + '%';
+                    }, 100);
+                });
+            }
+        });
     });
 }
 

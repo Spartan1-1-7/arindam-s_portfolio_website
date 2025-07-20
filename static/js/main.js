@@ -5,6 +5,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
     
+    console.log('DOM Content Loaded - Starting initialization');
+    
     // Initialize AOS with faster duration
     AOS.init({
         duration: 600,  // Reduced from 800 for faster animations
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initParticles();
     
     // Initialize the theme switcher
+    console.log('Initializing theme switcher...');
     initThemeSwitcher();
     
     // Initialize the navigation
@@ -35,9 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Cursor effect initialized");
     
     // Skills are now static cards, no progress animation needed
-    
-    // Initialize page transition
-    initPageTransition();
     
     // Log homepage loaded
     if (document.querySelector('.hero-section')) {
@@ -66,54 +66,66 @@ function initThemeSwitcher() {
     const themeButton = document.getElementById('theme-button');
     const themeIcon = document.getElementById('theme-icon');
     
+    console.log('Theme button:', themeButton);
+    console.log('Theme icon:', themeIcon);
+    
+    if (!themeButton || !themeIcon) {
+        console.error('Theme toggle elements not found');
+        return;
+    }
+    
     // Check for saved user preference
     const savedTheme = localStorage.getItem('theme');
     
     // Set initial theme based on saved preference or default to light theme
     const initialTheme = savedTheme || 'light';
-    document.documentElement.setAttribute('data-theme', initialTheme);
-    document.body.setAttribute('data-theme', initialTheme);
+    setTheme(initialTheme);
     updateThemeIcon(initialTheme, themeIcon);
     
     // Add theme toggle event listener
-    if (themeButton) {
-        themeButton.addEventListener('click', function() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            // Set the new theme
-            document.documentElement.setAttribute('data-theme', newTheme);
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            // Update the icon
-            updateThemeIcon(newTheme, themeIcon);
-            
-            // Log theme change for debugging
-            console.log('Theme changed to:', newTheme);
-            
-            // Force complete style recalculation
-            document.documentElement.style.display = 'none';
-            document.documentElement.offsetHeight; // Trigger reflow
-            document.documentElement.style.display = '';
-            
-            // Reset and re-initialize particles when theme changes to ensure correct colors
-            if (window.pJSDom && window.pJSDom.length > 0) {
-                window.pJSDom[0].pJS.fn.vendors.destroypJS();
-                window.pJSDom = [];
-                setTimeout(() => {
-                    initParticles();
-                }, 50);
-            }
-            
-            // Also refresh neural network connections if on homepage
-            if (document.querySelector('.neural-network')) {
-                setTimeout(() => {
-                    initNeuralNetwork();
-                }, 100);
-            }
-        });
-    }
+    themeButton.addEventListener('click', function() {
+        console.log('Theme button clicked');
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        console.log('Switching from', currentTheme, 'to', newTheme);
+        
+        // Set the new theme
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update the icon
+        updateThemeIcon(newTheme, themeIcon);
+        
+        // Reset and re-initialize particles when theme changes to ensure correct colors
+        if (window.pJSDom && window.pJSDom.length > 0) {
+            window.pJSDom[0].pJS.fn.vendors.destroypJS();
+            window.pJSDom = [];
+            setTimeout(() => {
+                initParticles();
+            }, 50);
+        }
+        
+        // Also refresh neural network connections if on homepage
+        if (document.querySelector('.neural-network')) {
+            setTimeout(() => {
+                initNeuralNetwork();
+            }, 100);
+        }
+    });
+}
+
+function setTheme(theme) {
+    console.log('Setting theme to:', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    
+    // Force a style recalculation
+    document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+    
+    // Add the theme class to the body for additional styling
+    document.body.classList.remove('theme-light', 'theme-dark');
+    document.body.classList.add(`theme-${theme}`);
 }
 
 function updateThemeIcon(theme, iconElement) {

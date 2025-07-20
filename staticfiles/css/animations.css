@@ -150,14 +150,14 @@
 }
 
 .neural-network .active-node {
-    fill: #ff7b5c;
-    r: 9;
+    fill: var(--accent-color) !important;
+    r: 9 !important;
 }
 
 .neural-network .active-connection {
-    stroke: #ff7b5c;
-    stroke-width: 2.5;
-    opacity: 1;
+    stroke: var(--accent-color) !important;
+    stroke-width: 2.5 !important;
+    opacity: 1 !important;
     animation: flashConnection 1.5s infinite;
 }
 

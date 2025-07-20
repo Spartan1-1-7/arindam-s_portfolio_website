@@ -36,22 +36,45 @@ def index(request):
     return render(request, 'index.html', context)
 
 
+# def about(request):
+#     """About page view"""
+#     skills = Skill.objects.all()
+#     experiences = Experience.objects.all()
+#     education = Education.objects.all()
+#     achievements = Achievement.objects.all()
+    
+#     context = {
+#         'skills': skills,
+#         'experiences': experiences,
+#         'education': education,
+#         'achievements': achievements,
+#     }
+    
+#     return render(request, 'about.html', context)
+
 def about(request):
     """About page view"""
     skills = Skill.objects.all()
     experiences = Experience.objects.all()
     education = Education.objects.all()
     achievements = Achievement.objects.all()
-    
+
+    # Create a simple info object with basic contact information
+    info = {
+        'linkedin': 'linkedin.com/in/arindam-shukla',
+        'email': 'arindamshrish@gmail.com',
+        'github': 'https://github.com/Spartan1-1-7'
+    }
+
     context = {
         'skills': skills,
         'experiences': experiences,
         'education': education,
         'achievements': achievements,
+        'info': info,
     }
-    
-    return render(request, 'about.html', context)
 
+    return render(request, 'about.html', context)
 
 def all_projects(request):
     """Projects page with filtering and pagination"""
