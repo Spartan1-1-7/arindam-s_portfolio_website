@@ -356,13 +356,53 @@ h1, h2, h3, h4, h5, h6 {
   height: auto;
 }
 
-.neural-network .node { transition: all 0.3s ease; }
-.neural-network .node.input { fill: #F59E0B; }
-.neural-network .node.hidden { fill: var(--primary); }
-.neural-network .node.output { fill: var(--secondary); }
-.neural-network .connection { stroke: var(--primary); stroke-width: 1.5; opacity: 0.3; }
-.neural-network:hover .node { fill: var(--primary); }
-.neural-network:hover .connection { stroke: var(--accent); opacity: 0.6; }
+/* Neural Network - Minimal activation animation */
+.neural-network .node {
+  transition: opacity 0.5s ease-in-out, fill 0.5s ease-in-out;
+}
+
+.neural-network .node.input { fill: #6B7280; }
+.neural-network .node.hidden { fill: #6B7280; }
+.neural-network .node.output { fill: #6B7280; }
+
+.neural-network .node.active {
+  fill: #1F2937;
+  opacity: 1;
+}
+
+.neural-network .connection {
+  stroke: #4B5563;
+  stroke-width: 1.5;
+  opacity: 0.3;
+  transition: opacity 0.15s ease-in-out, stroke 0.15s ease-in-out, stroke-width 0.15s ease-in-out;
+}
+
+.neural-network .connection.active {
+  stroke: #EF4444;
+  opacity: 1;
+  stroke-width: 3;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .neural-network .node.input,
+[data-theme="dark"] .neural-network .node.hidden,
+[data-theme="dark"] .neural-network .node.output {
+  fill: #4B5563;
+}
+
+[data-theme="dark"] .neural-network .node.active {
+  fill: #E5E7EB;
+}
+
+[data-theme="dark"] .neural-network .connection {
+  stroke: #374151;
+  opacity: 0.4;
+}
+
+[data-theme="dark"] .neural-network .connection.active {
+  stroke: #FBBF24;
+  opacity: 1;
+}
 
 /* About Section */
 .about-section { background: var(--bg-light); }

@@ -1,6 +1,185 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [animationStep, setAnimationStep] = useState<number>(0);
+
+  // Define connection groups by layer
+  const connectionGroups = {
+    inputToHidden1: [0, 1, 2, 3, 4, 5, 6, 7, 8], // connections from input to hidden layer 1
+    hidden1ToHidden2: [9, 10, 11, 12, 13, 14, 15, 16], // connections from hidden layer 1 to hidden layer 2
+    hidden2ToOutput: [17, 18, 19, 20, 21, 22], // connections from hidden layer 2 to output
+  };
+
+  // Define all connections
+  const connections = [
+    { x1: 50, y1: 75, x2: 150, y2: 50, id: 0 },
+    { x1: 50, y1: 75, x2: 150, y2: 125, id: 1 },
+    { x1: 50, y1: 75, x2: 150, y2: 200, id: 2 },
+    { x1: 50, y1: 150, x2: 150, y2: 50, id: 3 },
+    { x1: 50, y1: 150, x2: 150, y2: 125, id: 4 },
+    { x1: 50, y1: 150, x2: 150, y2: 200, id: 5 },
+    { x1: 50, y1: 225, x2: 150, y2: 125, id: 6 },
+    { x1: 50, y1: 225, x2: 150, y2: 200, id: 7 },
+    { x1: 50, y1: 225, x2: 150, y2: 275, id: 8 },
+    { x1: 150, y1: 50, x2: 250, y2: 75, id: 9 },
+    { x1: 150, y1: 50, x2: 250, y2: 150, id: 10 },
+    { x1: 150, y1: 125, x2: 250, y2: 75, id: 11 },
+    { x1: 150, y1: 125, x2: 250, y2: 150, id: 12 },
+    { x1: 150, y1: 125, x2: 250, y2: 225, id: 13 },
+    { x1: 150, y1: 200, x2: 250, y2: 150, id: 14 },
+    { x1: 150, y1: 200, x2: 250, y2: 225, id: 15 },
+    { x1: 150, y1: 275, x2: 250, y2: 225, id: 16 },
+    { x1: 250, y1: 75, x2: 350, y2: 100, id: 17 },
+    { x1: 250, y1: 75, x2: 350, y2: 200, id: 18 },
+    { x1: 250, y1: 150, x2: 350, y2: 100, id: 19 },
+    { x1: 250, y1: 150, x2: 350, y2: 200, id: 20 },
+    { x1: 250, y1: 225, x2: 350, y2: 100, id: 21 },
+    { x1: 250, y1: 225, x2: 350, y2: 200, id: 22 },
+  ];
+
+  // Define node groups by layer
+  const nodeGroups = {
+    input: ['i0', 'i1', 'i2'],
+    hidden1: ['h1_0', 'h1_1', 'h1_2', 'h1_3'],
+    hidden2: ['h2_0', 'h2_1', 'h2_2'],
+    output: ['o0', 'o1'],
+  };
+
+  const nodes = [
+    { cx: 50, cy: 75, className: 'input', id: 'i0' },
+    { cx: 50, cy: 150, className: 'input', id: 'i1' },
+    { cx: 50, cy: 225, className: 'input', id: 'i2' },
+    { cx: 150, cy: 50, className: 'hidden', id: 'h1_0' },
+    { cx: 150, cy: 125, className: 'hidden', id: 'h1_1' },
+    { cx: 150, cy: 200, className: 'hidden', id: 'h1_2' },
+    { cx: 150, cy: 275, className: 'hidden', id: 'h1_3' },
+    { cx: 250, cy: 75, className: 'hidden', id: 'h2_0' },
+    { cx: 250, cy: 150, className: 'hidden', id: 'h2_1' },
+    { cx: 250, cy: 225, className: 'hidden', id: 'h2_2' },
+    { cx: 350, cy: 100, className: 'output', id: 'o0' },
+    { cx: 350, cy: 200, className: 'output', id: 'o1' },
+  ];
+
+  // Determine which elements should be active based on animation step
+  const getActiveElements = (step: number) => {
+    const activeNodes: string[] = [];
+    const activeConnections: number[] = [];
+
+    // Pick random subset of neurons for each layer
+    const randomSubset = (arr: string[], min: number, max: number) => {
+      const count = Math.floor(Math.random() * (max - min + 1)) + min;
+      const shuffled = [...arr].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, count);
+    };
+
+    // Select random neurons for this animation cycle (stored once per cycle)
+    if (step === 0) {
+      // Store random selections for this animation cycle
+      (window as any).__nnActiveInput = randomSubset(nodeGroups.input, 1, 2);
+      (window as any).__nnActiveHidden1 = randomSubset(nodeGroups.hidden1, 1, 3);
+      (window as any).__nnActiveHidden2 = randomSubset(nodeGroups.hidden2, 1, 2);
+      (window as any).__nnActiveOutput = randomSubset(nodeGroups.output, 1, 2);
+    }
+
+    const selectedInput = (window as any).__nnActiveInput || [];
+    const selectedHidden1 = (window as any).__nnActiveHidden1 || [];
+    const selectedHidden2 = (window as any).__nnActiveHidden2 || [];
+    const selectedOutput = (window as any).__nnActiveOutput || [];
+
+    // Animation sequence with random neurons
+    switch (step) {
+      case 0: // Random input neurons
+        activeNodes.push(...selectedInput);
+        break;
+      case 1: // Lines from active inputs to selected hidden1
+        connectionGroups.inputToHidden1.forEach(connId => {
+          const conn = connections[connId];
+          const sourceActive = nodes.some(n => 
+            selectedInput.includes(n.id) && n.cx === conn.x1 && n.cy === conn.y1
+          );
+          const targetActive = nodes.some(n => 
+            selectedHidden1.includes(n.id) && n.cx === conn.x2 && n.cy === conn.y2
+          );
+          if (sourceActive && targetActive) {
+            activeConnections.push(connId);
+          }
+        });
+        break;
+      case 2: // Random hidden1 neurons
+        activeNodes.push(...selectedHidden1);
+        break;
+      case 3: // Lines from active hidden1 to selected hidden2
+        connectionGroups.hidden1ToHidden2.forEach(connId => {
+          const conn = connections[connId];
+          const sourceActive = nodes.some(n => 
+            selectedHidden1.includes(n.id) && n.cx === conn.x1 && n.cy === conn.y1
+          );
+          const targetActive = nodes.some(n => 
+            selectedHidden2.includes(n.id) && n.cx === conn.x2 && n.cy === conn.y2
+          );
+          if (sourceActive && targetActive) {
+            activeConnections.push(connId);
+          }
+        });
+        break;
+      case 4: // Random hidden2 neurons
+        activeNodes.push(...selectedHidden2);
+        break;
+      case 5: // Lines from active hidden2 to selected output
+        connectionGroups.hidden2ToOutput.forEach(connId => {
+          const conn = connections[connId];
+          const sourceActive = nodes.some(n => 
+            selectedHidden2.includes(n.id) && n.cx === conn.x1 && n.cy === conn.y1
+          );
+          const targetActive = nodes.some(n => 
+            selectedOutput.includes(n.id) && n.cx === conn.x2 && n.cy === conn.y2
+          );
+          if (sourceActive && targetActive) {
+            activeConnections.push(connId);
+          }
+        });
+        break;
+      case 6: // Random output neurons
+        activeNodes.push(...selectedOutput);
+        break;
+      case 7: // Idle state
+        break;
+    }
+
+    return { activeNodes, activeConnections };
+  };
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const runAnimation = () => {
+      let step = 0;
+      
+      const animate = () => {
+        setAnimationStep(step);
+        step++;
+        
+        if (step < 8) {
+          const timings = [1200, 300, 900, 300, 900, 300, 900, 600];
+          timeoutId = setTimeout(animate, timings[step - 1]);
+        } else {
+          // Reset and loop with new random selection
+          timeoutId = setTimeout(runAnimation, 300);
+        }
+      };
+      
+      animate();
+    };
+
+    runAnimation();
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  const { activeNodes, activeConnections } = getActiveElements(animationStep);
   return (
     <>
       {/* Hero Section */}
@@ -26,52 +205,28 @@ export default function Home() {
             </div>
             <div className="hero-visual">
               <svg className="neural-network" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-                {/* Input Layer */}
-                <circle cx="50" cy="75" r="12" className="node input" />
-                <circle cx="50" cy="150" r="12" className="node input" />
-                <circle cx="50" cy="225" r="12" className="node input" />
+                {/* Connections - drawn first so they appear behind nodes */}
+                {connections.map((conn) => (
+                  <line
+                    key={conn.id}
+                    x1={conn.x1}
+                    y1={conn.y1}
+                    x2={conn.x2}
+                    y2={conn.y2}
+                    className={`connection ${activeConnections.includes(conn.id) ? 'active' : ''}`}
+                  />
+                ))}
                 
-                {/* Hidden Layer 1 */}
-                <circle cx="150" cy="50" r="12" className="node hidden" />
-                <circle cx="150" cy="125" r="12" className="node hidden" />
-                <circle cx="150" cy="200" r="12" className="node hidden" />
-                <circle cx="150" cy="275" r="12" className="node hidden" />
-                
-                {/* Hidden Layer 2 */}
-                <circle cx="250" cy="75" r="12" className="node hidden" />
-                <circle cx="250" cy="150" r="12" className="node hidden" />
-                <circle cx="250" cy="225" r="12" className="node hidden" />
-                
-                {/* Output Layer */}
-                <circle cx="350" cy="100" r="12" className="node output" />
-                <circle cx="350" cy="200" r="12" className="node output" />
-                
-                {/* Connections */}
-                <line x1="50" y1="75" x2="150" y2="50" className="connection" />
-                <line x1="50" y1="75" x2="150" y2="125" className="connection" />
-                <line x1="50" y1="75" x2="150" y2="200" className="connection" />
-                <line x1="50" y1="150" x2="150" y2="50" className="connection" />
-                <line x1="50" y1="150" x2="150" y2="125" className="connection" />
-                <line x1="50" y1="150" x2="150" y2="200" className="connection" />
-                <line x1="50" y1="225" x2="150" y2="125" className="connection" />
-                <line x1="50" y1="225" x2="150" y2="200" className="connection" />
-                <line x1="50" y1="225" x2="150" y2="275" className="connection" />
-                
-                <line x1="150" y1="50" x2="250" y2="75" className="connection" />
-                <line x1="150" y1="50" x2="250" y2="150" className="connection" />
-                <line x1="150" y1="125" x2="250" y2="75" className="connection" />
-                <line x1="150" y1="125" x2="250" y2="150" className="connection" />
-                <line x1="150" y1="125" x2="250" y2="225" className="connection" />
-                <line x1="150" y1="200" x2="250" y2="150" className="connection" />
-                <line x1="150" y1="200" x2="250" y2="225" className="connection" />
-                <line x1="150" y1="275" x2="250" y2="225" className="connection" />
-                
-                <line x1="250" y1="75" x2="350" y2="100" className="connection" />
-                <line x1="250" y1="75" x2="350" y2="200" className="connection" />
-                <line x1="250" y1="150" x2="350" y2="100" className="connection" />
-                <line x1="250" y1="150" x2="350" y2="200" className="connection" />
-                <line x1="250" y1="225" x2="350" y2="100" className="connection" />
-                <line x1="250" y1="225" x2="350" y2="200" className="connection" />
+                {/* Nodes */}
+                {nodes.map((node) => (
+                  <circle
+                    key={node.id}
+                    cx={node.cx}
+                    cy={node.cy}
+                    r="12"
+                    className={`node ${node.className} ${activeNodes.includes(node.id) ? 'active' : ''}`}
+                  />
+                ))}
               </svg>
             </div>
           </div>
