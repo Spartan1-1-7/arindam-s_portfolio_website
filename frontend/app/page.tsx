@@ -3,8 +3,45 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+interface Profile {
+  id: number;
+  name: string;
+  tagline: string;
+  bio: string;
+  profile_image: string;
+  resume_url: string;
+}
+
+interface Skill {
+  id: number;
+  name: string;
+  category: string;
+  icon: string;
+}
+
 export default function Home() {
   const [animationStep, setAnimationStep] = useState<number>(0);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    // Fetch profile data
+    fetch('http://localhost:8000/api/profile/')
+      .then(res => res.json())
+      .then(data => {
+        if (data.length > 0) {
+          setProfile(data[0]); // Get first profile
+        }
+      })
+      .catch(error => console.error('Error fetching profile:', error));
+
+    // Fetch skills data
+    fetch('http://localhost:8000/api/skills/')
+      .then(res => res.json())
+      .then(data => setSkills(data))
+      .catch(error => console.error('Error fetching skills:', error));
+  }, []);
 
   // Define connection groups by layer
   const connectionGroups = {
@@ -188,11 +225,11 @@ export default function Home() {
           <div className="hero-content">
             <div className="hero-text">
               <h1 className="hero-title">
-                Hello, I'm <span className="gradient-text">Arindam Shukla</span>
+                Hello, I'm <span className="gradient-text">{profile?.name || 'Arindam Shukla'}</span>
               </h1>
-              <p className="hero-subtitle">AI/ML Specialist & Computer Science Student</p>
+              <p className="hero-subtitle">{profile?.tagline || 'AI/ML Specialist & Computer Science Student'}</p>
               <p className="hero-description">
-                Specializing in Machine Learning, Deep Learning, and Data Science solutions.
+                {profile?.bio || 'Specializing in Machine Learning, Deep Learning, and Data Science solutions.'}
               </p>
               <div className="hero-buttons">
                 <Link href="/projects" className="btn btn-primary">
@@ -258,7 +295,7 @@ export default function Home() {
                 <Link href="/#skills" className="btn btn-outline">
                   Learn More
                 </Link>
-                <a href="/resume.pdf" className="btn btn-primary" download>
+                <a href={profile?.resume_url || '/resume.pdf'} className="btn btn-primary" download>
                   Download Resume
                 </a>
               </div>
@@ -288,7 +325,7 @@ export default function Home() {
                   <span className="tag">+More</span>
                 </div>
                 <div className="project-links">
-                  <a href="#" className="project-link">
+                  <a href="#" className="project-link" onClick={(e) => { e.preventDefault(); setShowModal(true); }}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -320,7 +357,7 @@ export default function Home() {
                   <span className="tag">+More</span>
                 </div>
                 <div className="project-links">
-                  <a href="#" className="project-link">
+                  <a href="#" className="project-link" onClick={(e) => { e.preventDefault(); setShowModal(true); }}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -352,7 +389,7 @@ export default function Home() {
                   <span className="tag">+More</span>
                 </div>
                 <div className="project-links">
-                  <a href="#" className="project-link">
+                  <a href="#" className="project-link" onClick={(e) => { e.preventDefault(); setShowModal(true); }}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -386,65 +423,83 @@ export default function Home() {
           <p className="section-subtitle">My proficiency levels in various technologies and tools</p>
           
           <div className="skills-grid">
-            <div className="skill-card">
-              <div className="skill-icon">🐍</div>
-              <h3>Python</h3>
-              <p>Programming</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">🔥</div>
-              <h3>TensorFlow</h3>
-              <p>ML Framework</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">⚡</div>
-              <h3>PyTorch</h3>
-              <p>ML Framework</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">🤖</div>
-              <h3>Scikit-learn</h3>
-              <p>ML Framework</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">🐼</div>
-              <h3>Pandas</h3>
-              <p>Data Analysis</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">🔢</div>
-              <h3>NumPy</h3>
-              <p>Data Analysis</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">💾</div>
-              <h3>SQL</h3>
-              <p>Database</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">🐳</div>
-              <h3>Docker</h3>
-              <p>DevOps</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">📝</div>
-              <h3>Git</h3>
-              <p>Version Control</p>
-            </div>
-            
-            <div className="skill-card">
-              <div className="skill-icon">📓</div>
-              <h3>Jupyter</h3>
-              <p>Tools</p>
-            </div>
+            {skills.length > 0 ? (
+              skills.map((skill) => (
+                <div key={skill.id} className="skill-card">
+                  <div className="skill-icon">
+                    {skill.icon.includes('http') || skill.icon.includes('.') ? (
+                      <img src={skill.icon} alt={skill.name} style={{width: '40px', height: '40px'}} />
+                    ) : (
+                      skill.icon
+                    )}
+                  </div>
+                  <h3>{skill.name}</h3>
+                  <p>{skill.category}</p>
+                </div>
+              ))
+            ) : (
+              <>
+                <div className="skill-card">
+                  <div className="skill-icon">🐍</div>
+                  <h3>Python</h3>
+                  <p>Programming</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">🔥</div>
+                  <h3>TensorFlow</h3>
+                  <p>ML Framework</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">⚡</div>
+                  <h3>PyTorch</h3>
+                  <p>ML Framework</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">🤖</div>
+                  <h3>Scikit-learn</h3>
+                  <p>ML Framework</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">🐼</div>
+                  <h3>Pandas</h3>
+                  <p>Data Analysis</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">🔢</div>
+                  <h3>NumPy</h3>
+                  <p>Data Analysis</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">💾</div>
+                  <h3>SQL</h3>
+                  <p>Database</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">🐳</div>
+                  <h3>Docker</h3>
+                  <p>DevOps</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">📝</div>
+                  <h3>Git</h3>
+                  <p>Version Control</p>
+                </div>
+                
+                <div className="skill-card">
+                  <div className="skill-icon">📓</div>
+                  <h3>Jupyter</h3>
+                  <p>Tools</p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -546,6 +601,18 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Coming Soon Modal */}
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Coming soon 🚧</h2>
+            <p>This project isn't deployed yet, but it will be live very soon.</p>
+            <p>Check back shortly!</p>
+            <button className="btn btn-primary" onClick={() => setShowModal(false)}>Got it</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

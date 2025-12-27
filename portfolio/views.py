@@ -1,28 +1,42 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Project, Skill, Experience, Contact
-import json
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Profile, Project, Skill, Experience, Achievement, Education, Contact
+from .serializers import (
+    ProfileSerializer, ProjectSerializer, SkillSerializer,
+    ExperienceSerializer, AchievementSerializer, EducationSerializer,
+    ContactSerializer
+)
 
-def projects_list(request):
-    projects = Project.objects.all().values()
-    return JsonResponse(list(projects), safe=False)
+class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
 
-def skills_list(request):
-    skills = Skill.objects.all().values()
-    return JsonResponse(list(skills), safe=False)
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
 
-def experience_list(request):
-    experiences = Experience.objects.all().values()
-    return JsonResponse(list(experiences), safe=False)
+class SkillViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
 
-@csrf_exempt
+class ExperienceViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Experience.objects.all()
+    serializer_class = ExperienceSerializer
+
+class AchievementViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Achievement.objects.all()
+    serializer_class = AchievementSerializer
+
+class EducationViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Education.objects.all()
+    serializer_class = EducationSerializer
+
+@api_view(['POST'])
 def contact_submit(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        Contact.objects.create(
-            name=data.get('name'),
-            email=data.get('email'),
-            message=data.get('message')
-        )
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+    serializer = ContactSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Message sent successfully!'}, status=201)
+    return Response(serializer.errors, status=400)
+
