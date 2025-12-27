@@ -60,7 +60,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3>Email</h3>
-                    <p>arindam@example.com</p>
+                    <p>arindamshrish@gmail.com</p>
                   </div>
                 </div>
 
@@ -72,7 +72,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3>LinkedIn</h3>
-                    <p>linkedin.com/in/arindamshukla</p>
+                    <p>linkedin.com/in/arindam-shukla</p>
                   </div>
                 </div>
 
@@ -84,7 +84,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3>GitHub</h3>
-                    <p>github.com/arindamshukla</p>
+                    <p>github.com/Spartan1-1-7</p>
                   </div>
                 </div>
               </div>

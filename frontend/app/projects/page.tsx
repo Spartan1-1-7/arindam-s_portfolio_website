@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+const API_BASE_URL = 'http://localhost:8000';
+
 interface Project {
   id: number;
   title: string;
@@ -19,7 +21,7 @@ export default function Projects() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/projects/')
+    fetch(`${API_BASE_URL}/api/projects/`)
       .then(res => res.json())
       .then(data => {
         setProjects(data);
@@ -72,7 +74,11 @@ export default function Projects() {
           <div className="projects-grid">
             {projects.map((project) => (
               <div key={project.id} className="project-card">
-                <div className="project-image">
+                <div className="project-image" style={project.image ? {
+                  backgroundImage: `url(${project.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                } : {}}>
                   <span className={`project-badge ${getCategoryBadgeClass(project.category)}`}>{project.category}</span>
                 </div>
                 <div className="project-content">

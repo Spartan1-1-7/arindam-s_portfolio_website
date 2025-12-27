@@ -13,7 +13,7 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProfileSerializer
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().order_by('-order', '-id')
     serializer_class = ProjectSerializer
 
 class SkillViewSet(viewsets.ReadOnlyModelViewSet):
