@@ -520,7 +520,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-muted);
 }
 
-.project-links { display: flex; gap: 1rem; }
+.project-links { display: flex; gap: 1rem; justify-content: space-between; }
 
 .project-link {
   display: flex;
