@@ -1,32 +1,70 @@
 /* ========================================
    CSS Variables & Theme
+   Terminal Dark Mode + Professional Light Mode
    ======================================== */
+
+/* Light Mode - Professional & Balanced */
 :root {
-  --primary: #6366F1;
-  --secondary: #8B5CF6;
-  --accent: #F59E0B;
-  --text: #1F2937;
+  /* Colors */
+  --primary: #0F766E;
+  --primary-hover: #0d6259;
+  --secondary: #2563EB;
+  --accent: #0F766E;
+  --text: #111111;
+  --text-secondary: #555555;
   --text-muted: #6B7280;
-  --bg: #F9FAFB;
+  
+  /* Backgrounds */
+  --bg: #FAFAFA;
   --bg-light: #FFFFFF;
   --card-bg: #FFFFFF;
+  --card-hover: #F9FAFB;
+  
+  /* Borders & Shadows */
   --border: #E5E7EB;
+  --border-light: #F3F4F6;
   --shadow: rgba(0, 0, 0, 0.1);
-  --gradient: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  --shadow-md: rgba(0, 0, 0, 0.15);
+  
+  /* Gradients */
+  --gradient: linear-gradient(135deg, #0F766E 0%, #2563EB 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(15, 118, 110, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  
+  /* Typography */
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
 
+/* Dark Mode - Terminal Aesthetic */
 [data-theme="dark"] {
-  --primary: #818CF8;
-  --secondary: #A78BFA;
-  --accent: #FBBF24;
-  --text: #F3F4F6;
-  --text-muted: #9CA3AF;
-  --bg: #0F172A;
-  --bg-light: #1E293B;
-  --card-bg: #1E293B;
-  --border: #334155;
-  --shadow: rgba(0, 0, 0, 0.3);
-  --gradient: linear-gradient(135deg, #818CF8 0%, #A78BFA 100%);
+  /* Terminal Colors */
+  --primary: #00FF66;
+  --primary-hover: #33FF88;
+  --secondary: #66FF99;
+  --accent: #00FF66;
+  --text: #00FF66;
+  --text-secondary: #66FF99;
+  --text-muted: #4A9B6B;
+  
+  /* Backgrounds */
+  --bg: #000000;
+  --bg-light: #0A0A0A;
+  --card-bg: #0A0A0A;
+  --card-hover: #111111;
+  
+  /* Borders & Shadows */
+  --border: #003D1F;
+  --border-light: #005A2E;
+  --shadow: rgba(0, 255, 102, 0.1);
+  --shadow-md: rgba(0, 255, 102, 0.2);
+  
+  /* Gradients */
+  --gradient: linear-gradient(135deg, #00FF66 0%, #00CC55 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(0, 255, 102, 0.1) 0%, rgba(0, 204, 85, 0.1) 100%);
+  
+  /* Terminal specific */
+  --terminal-cursor: #00FF66;
+  --terminal-glow: rgba(0, 255, 102, 0.3);
 }
 
 /* Reset & Base */
@@ -38,15 +76,33 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Dark mode terminal text rendering */
+[data-theme="dark"] body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Terminal effect for dark mode headings */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3 {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 10px var(--terminal-glow);
 }
 
 main { padding-top: 80px; }
@@ -59,16 +115,17 @@ main { padding-top: 80px; }
   width: 100%;
   height: 100%;
   z-index: -1;
-  background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 50%, rgba(15, 118, 110, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(15, 118, 110, 0.03) 0%, transparent 50%);
   pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 [data-theme="dark"] .particles-bg {
-  background: radial-gradient(circle at 20% 50%, rgba(129, 140, 248, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 50%, rgba(0, 255, 102, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 255, 102, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(0, 204, 85, 0.02) 0%, transparent 50%);
 }
 
 /* Navigation */
@@ -165,6 +222,16 @@ main { padding-top: 80px; }
   border-color: var(--primary);
 }
 
+.theme-toggle:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Dark mode terminal theme toggle effect */
+[data-theme="dark"] .theme-toggle:hover {
+  box-shadow: 0 0 20px var(--terminal-glow);
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
@@ -177,6 +244,38 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Code blocks */
+code {
+  font-family: var(--font-mono);
+  background: var(--card-bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid var(--border);
+}
+
+pre {
+  font-family: var(--font-mono);
+  background: var(--card-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+/* Dark mode terminal code blocks */
+[data-theme="dark"] code,
+[data-theme="dark"] pre {
+  background: rgba(0, 255, 102, 0.05);
+  border-color: var(--primary-dark);
 }
 
 /* Buttons */
@@ -193,29 +292,61 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   transition: all 0.3s ease;
   gap: 0.5rem;
+  position: relative;
 }
 
 .btn-primary {
   background: var(--gradient);
-  color: white;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px var(--shadow);
 }
 
 .btn-primary:hover {
+  background: linear-gradient(135deg, #0d6259 0%, #1e4fc7 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px var(--shadow-md);
+}
+
+.btn-primary:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Dark mode terminal button effect */
+[data-theme="dark"] .btn-primary {
+  color: #000000;
+  text-shadow: none;
+  box-shadow: 0 0 20px var(--terminal-glow), 0 4px 12px var(--shadow);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  box-shadow: 0 0 30px var(--terminal-glow), 0 6px 20px var(--shadow-md);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--primary);
-  border: 2px solid var(--primary);
+  border: 2px solid transparent;
+  border-image: var(--gradient) 1;
 }
 
 .btn-secondary:hover {
-  background: var(--primary);
-  color: white;
+  background: var(--gradient);
+  color: #FFFFFF;
   transform: translateY(-2px);
+  border-image: none;
+  border-color: transparent;
+}
+
+.btn-secondary:focus,
+.btn-outline:focus,
+.btn-white:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  box-shadow: 0 0 20px var(--terminal-glow);
 }
 
 .btn-outline {
@@ -225,8 +356,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-outline:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  background: var(--gradient);
+  color: #FFFFFF;
+  border-color: transparent;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  box-shadow: 0 0 15px var(--terminal-glow);
 }
 
 .btn-white {
@@ -234,9 +370,17 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--primary);
 }
 
+[data-theme="dark"] .btn-white {
+  background: var(--bg-light);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
 .btn-white:hover {
+  background: var(--gradient);
+  color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 20px var(--shadow-md);
 }
 
 .btn-lg {
@@ -324,6 +468,21 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.1;
 }
 
+.terminal-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background-color: var(--primary);
+  margin-right: 0.25rem;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+[data-theme="dark"] .terminal-cursor {
+  background-color: var(--terminal-cursor);
+  box-shadow: 0 0 8px var(--terminal-glow);
+}
+
 .hero-subtitle {
   font-size: 1.5rem;
   color: var(--text-muted);
@@ -391,7 +550,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="dark"] .neural-network .node.active {
-  fill: #E5E7EB;
+  fill: #00FF66;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.6));
 }
 
 [data-theme="dark"] .neural-network .connection {
@@ -400,8 +560,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="dark"] .neural-network .connection.active {
-  stroke: #FBBF24;
+  stroke: #4A9B6B;
   opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(74, 155, 107, 0.5));
 }
 
 /* About Section */
@@ -465,8 +626,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .project-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 40px var(--shadow);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px var(--shadow-md);
+  border-color: var(--primary);
+}
+
+/* Dark mode terminal card effect */
+[data-theme="dark"] .project-card {
+  box-shadow: 0 0 1px var(--border);
+}
+
+[data-theme="dark"] .project-card:hover {
+  box-shadow: 0 0 20px var(--terminal-glow), 0 12px 24px var(--shadow-md);
+  border-color: var(--primary);
 }
 
 .project-image {
@@ -532,35 +704,176 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s ease;
 }
 
-.project-link:hover { transform: translateX(4px); }
+.project-link:hover { 
+  transform: translateX(4px);
+  color: var(--primary-hover);
+}
+
+/* Dark mode terminal link effect */
+[data-theme="dark"] .project-link:hover {
+  text-shadow: 0 0 8px var(--terminal-glow);
+}
+
+/* General link styles */
+a {
+  color: var(--primary);
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+a:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+[data-theme="dark"] a:hover {
+  text-shadow: 0 0 8px var(--terminal-glow);
+}
 
 /* Skills */
 .skills-section { background: var(--bg-light); }
 
+.skills-grid-wrapper {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 0 2rem;
+  overflow: visible;
+}
+
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-rows: repeat(2, 1fr);
+  grid-auto-flow: column;
+  grid-auto-columns: 240px;
   gap: 1.5rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 1rem 0;
+  padding-bottom: 1rem;
+  scroll-behavior: smooth;
+}
+
+.skills-grid::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+}
+
+.skills-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.skills-grid::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.skills-grid::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+.skills-grid {
+  scrollbar-width: none;
 }
 
 .skill-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 2rem;
+  padding: 1.5rem;
   text-align: center;
   transition: all 0.3s ease;
+  cursor: pointer;
+  width: 240px;
+  height: 240px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .skill-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 16px var(--shadow-md);
   border-color: var(--primary);
-  box-shadow: 0 8px 24px var(--shadow);
 }
 
-.skill-icon { font-size: 3rem; margin-bottom: 1rem; }
-.skill-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
-.skill-card p { color: var(--text-muted); font-size: 0.9rem; }
+/* Dark mode terminal skill card effect */
+[data-theme="dark"] .skill-card:hover {
+  box-shadow: 0 0 15px var(--terminal-glow), 0 8px 16px var(--shadow-md);
+}
+
+/* Full skills page grid */
+.skills-full-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.back-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-link:hover {
+  transform: translateX(-4px);
+}
+
+[data-theme="dark"] .back-link:hover {
+  text-shadow: 0 0 8px var(--terminal-glow);
+}
+
+.skill-icon { 
+  font-size: 3rem; 
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.skill-card h3 { 
+  font-size: 1.15rem; 
+  margin: 0;
+  line-height: 1.3;
+  max-height: 3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  width: 100%;
+}
+
+.skill-card p { 
+  color: var(--text-muted); 
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  width: 100%;
+}
 
 /* Timeline */
 .experience-section { background: var(--bg); }
@@ -582,6 +895,11 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--primary);
 }
 
+/* Dark mode terminal timeline effect */
+[data-theme="dark"] .timeline::before {
+  box-shadow: 0 0 10px var(--terminal-glow);
+}
+
 .timeline-item {
   position: relative;
   padding-bottom: 3rem;
@@ -597,6 +915,12 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--primary);
   border-radius: 50%;
   border: 3px solid var(--bg);
+  transition: all 0.3s ease;
+}
+
+/* Dark mode terminal timeline dot effect */
+[data-theme="dark"] .timeline-item::before {
+  box-shadow: 0 0 15px var(--terminal-glow);
 }
 
 .timeline-content {
@@ -610,6 +934,12 @@ h1, h2, h3, h4, h5, h6 {
 .timeline-content:hover {
   transform: translateX(8px);
   box-shadow: 0 8px 24px var(--shadow);
+}
+
+/* Dark mode terminal timeline content effect */
+[data-theme="dark"] .timeline-content:hover {
+  box-shadow: 0 0 20px var(--terminal-glow), 0 8px 24px var(--shadow);
+  border-color: var(--primary);
 }
 
 .timeline-date {
@@ -648,11 +978,24 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 12px 40px var(--shadow);
 }
 
+/* Dark mode terminal achievement card effect */
+[data-theme="dark"] .achievement-card:hover {
+  box-shadow: 0 0 25px var(--terminal-glow), 0 12px 40px var(--shadow);
+  border-color: var(--primary);
+}
+
 .achievement-icon { font-size: 3rem; margin-bottom: 1rem; }
 .achievement-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
 .achievement-year { display: inline-block; color: var(--primary); font-weight: 600; margin-bottom: 1rem; }
 .achievement-card p { color: var(--text-muted); margin-bottom: 1rem; }
-.achievement-location { color: var(--text-muted); font-size: 0.9rem; }
+.achievement-location { 
+  color: var(--primary); 
+  font-size: 0.9rem; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
 
 /* CTA */
 .cta-section {
@@ -724,6 +1067,20 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
+/* Dark mode terminal form focus effect */
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group textarea:focus {
+  box-shadow: 0 0 0 3px var(--terminal-glow), 0 0 15px var(--terminal-glow);
+  border-color: var(--primary);
+}
+
+/* Dark mode terminal form input styling */
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea {
+  background: rgba(0, 255, 102, 0.05);
+  border-color: var(--primary-dark);
+}
+
 .form-group textarea { resize: vertical; }
 
 .success-message {
@@ -776,6 +1133,12 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-4px);
 }
 
+/* Dark mode terminal footer social link effect */
+[data-theme="dark"] .footer-social a:hover {
+  box-shadow: 0 0 20px var(--terminal-glow);
+  color: #000000;
+}
+
 .footer-bottom {
   text-align: center;
   padding-top: 2rem;
@@ -798,6 +1161,15 @@ h1, h2, h3, h4, h5, h6 {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
   }
 }
 

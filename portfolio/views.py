@@ -21,12 +21,17 @@ class SkillViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SkillSerializer
 
 class ExperienceViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Experience.objects.all()
+    queryset = Experience.objects.all().order_by('-start_date')
     serializer_class = ExperienceSerializer
 
 class AchievementViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Achievement.objects.all()
     serializer_class = AchievementSerializer
+    
+    def get_queryset(self):
+        achievements = list(Achievement.objects.all())
+        # Sort by parsed date
+        return sorted(achievements, key=lambda x: x.get_sort_date(), reverse=True)
 
 class EducationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Education.objects.all()

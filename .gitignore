@@ -69,3 +69,8 @@ htmlcov/
 
 #others
 to_do.md
+
+# Documentation (internal)
+THEME_CHANGELOG.md
+THEME_GUIDE.md
+COLOR_PALETTE.md

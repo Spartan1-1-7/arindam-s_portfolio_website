@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import React from 'react';
+
 
 const API_BASE_URL = 'http://localhost:8000';
 
@@ -61,6 +63,8 @@ export default function Home() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const skillsGridRef = React.useRef<HTMLDivElement>(null);
+  const isPausedRef = React.useRef(false);
 
   useEffect(() => {
     // Fetch profile data
@@ -97,6 +101,62 @@ export default function Home() {
       .then(data => setAchievements(data))
       .catch(error => console.error('Error fetching achievements:', error));
   }, []);
+
+  // Auto-scroll effect for skills
+  useEffect(() => {
+    const gridElement = skillsGridRef.current;
+    if (!gridElement || skills.length === 0) return;
+
+    // Wait for DOM to be fully laid out
+    const timer = setTimeout(() => {
+      if (!gridElement) return;
+
+      // Measure the actual width after layout
+      const firstChild = gridElement.children[0] as HTMLElement;
+      if (!firstChild) return;
+
+      // Since we have exact duplicates, the reset point is exactly half the scrollWidth
+      const resetPoint = Math.floor(gridElement.scrollWidth / 2);
+
+      const scroll = () => {
+        if (!isPausedRef.current && gridElement) {
+          gridElement.scrollLeft += 1;
+          
+          // Reset to 0 when we hit the halfway point (where duplicates start)
+          if (gridElement.scrollLeft >= resetPoint) {
+            gridElement.scrollLeft = 0;
+          }
+        }
+      };
+
+      const intervalId = setInterval(scroll, 20);
+
+      const handleMouseEnter = () => {
+        isPausedRef.current = true;
+      };
+
+      const handleMouseLeave = () => {
+        isPausedRef.current = false;
+      };
+
+      gridElement.addEventListener('mouseenter', handleMouseEnter);
+      gridElement.addEventListener('mouseleave', handleMouseLeave);
+
+      // Store for cleanup
+      (gridElement as any)._scrollCleanup = () => {
+        clearInterval(intervalId);
+        gridElement.removeEventListener('mouseenter', handleMouseEnter);
+        gridElement.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (gridElement && (gridElement as any)._scrollCleanup) {
+        (gridElement as any)._scrollCleanup();
+      }
+    };
+  }, [skills]);
 
   // Define connection groups by layer
   const connectionGroups = {
@@ -281,7 +341,7 @@ export default function Home() {
           <div className="hero-content">
             <div className="hero-text">
               <h1 className="hero-title">
-                Hello, I'm <span className="gradient-text">{profile?.name || 'Arindam Shukla'}</span>
+                Hello, I'm <span className="gradient-text">{profile?.name || 'Arindam Shukla'}</span><span className="terminal-cursor"></span>
               </h1>
               <p className="hero-subtitle">{profile?.tagline || 'AI/ML Specialist & Computer Science Student'}</p>
               <p className="hero-description">
@@ -353,11 +413,11 @@ export default function Home() {
               <h3>Computer Science Student specializing in AI & ML</h3>
               
               <div className="education-info">
-                <h4 className="info-title">🎓 Education</h4>
+                <h4 className="info-title">Education</h4>
                 <p className="info-text">
                   Bachelor of Technology in Computer Science and Technology with Specialization in Artificial Intelligence
                 </p>
-                <p className="info-subtext">🏛️ University of Lucknow</p>
+                <p className="info-subtext">University of Lucknow</p>
               </div>
               
               <div className="about-buttons">
@@ -560,22 +620,44 @@ export default function Home() {
         <div className="container">
           <h2 className="section-title">Technical Skills</h2>
           <p className="section-subtitle">My proficiency levels in various technologies and tools</p>
-          
-          <div className="skills-grid">
+        </div>
+        
+        <div className="skills-grid-wrapper">
+          <div className="skills-grid" ref={skillsGridRef}>
             {skills.length > 0 ? (
-              skills.map((skill) => (
-                <div key={skill.id} className="skill-card">
-                  <div className="skill-icon">
-                    {skill.icon.includes('http') || skill.icon.includes('.') ? (
-                      <img src={skill.icon} alt={skill.name} style={{width: '40px', height: '40px'}} />
-                    ) : (
-                      skill.icon
-                    )}
-                  </div>
-                  <h3>{skill.name}</h3>
-                  <p>{skill.category}</p>
-                </div>
-              ))
+              <>
+                {skills.map((skill) => (
+                  <Link href="/skills" key={skill.id} style={{textDecoration: 'none', color: 'inherit'}}>
+                    <div className="skill-card">
+                      <div className="skill-icon">
+                        {skill.icon.includes('http') || skill.icon.includes('.') ? (
+                          <img src={skill.icon} alt={skill.name} style={{width: '40px', height: '40px'}} />
+                        ) : (
+                          skill.icon
+                        )}
+                      </div>
+                      <h3>{skill.name}</h3>
+                      <p>{skill.category}</p>
+                    </div>
+                  </Link>
+                ))}
+                {/* Duplicate for infinite loop */}
+                {skills.map((skill) => (
+                  <Link href="/skills" key={`duplicate-${skill.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
+                    <div className="skill-card">
+                      <div className="skill-icon">
+                        {skill.icon.includes('http') || skill.icon.includes('.') ? (
+                          <img src={skill.icon} alt={skill.name} style={{width: '40px', height: '40px'}} />
+                        ) : (
+                          skill.icon
+                        )}
+                      </div>
+                      <h3>{skill.name}</h3>
+                      <p>{skill.category}</p>
+                    </div>
+                  </Link>
+                ))}
+              </>
             ) : (
               <>
                 <div className="skill-card">
@@ -707,7 +789,20 @@ export default function Home() {
                   <h3>{achievement.name}</h3>
                   <span className="achievement-year">{achievement.date}</span>
                   <p>{achievement.description}</p>
-                  {achievement.location && <span className="achievement-location">📍 {achievement.location}</span>}
+                  {achievement.location && (
+                    <span className="achievement-location">
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="currentColor" 
+                        style={{marginRight: '4px', verticalAlign: 'middle'}}
+                      >
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      </svg>
+                      {achievement.location}
+                    </span>
+                  )}
                 </div>
               ))
             ) : (

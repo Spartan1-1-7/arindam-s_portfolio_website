@@ -59,6 +59,23 @@ class Achievement(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def get_sort_date(self):
+        """Convert date string to sortable format for ordering"""
+        from datetime import datetime
+        try:
+            # Try parsing "Month YYYY" format
+            return datetime.strptime(self.date, "%B %Y")
+        except:
+            try:
+                # Try parsing "YYYY" format
+                return datetime.strptime(self.date, "%Y")
+            except:
+                # Return a very old date if parsing fails
+                return datetime(1900, 1, 1)
+    
+    class Meta:
+        ordering = ['-date']  # Will be overridden in view
 
 class Education(models.Model):
     degree = models.CharField(max_length=200)
