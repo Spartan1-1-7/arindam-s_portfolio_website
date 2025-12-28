@@ -27,11 +27,8 @@ export default function SkillsPage() {
       {/* Hero Section */}
       <section className="section" style={{paddingTop: '120px'}}>
         <div className="container">
-          <Link href="/" className="back-link">
-            ← Back to Home
-          </Link>
-          <h1 className="section-title" style={{marginTop: '2rem'}}>Technical Skills</h1>
-          <p className="section-subtitle">Complete overview of my proficiency in various technologies and tools</p>
+          <h1 className="section-title">Technical Skills</h1>
+          <p className="section-subtitle">Complete overview of my skills in various technologies and tools</p>
         </div>
       </section>
 

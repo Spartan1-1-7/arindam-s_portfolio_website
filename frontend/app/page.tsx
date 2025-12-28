@@ -619,7 +619,7 @@ export default function Home() {
       <section id="skills" className="section skills-section">
         <div className="container">
           <h2 className="section-title">Technical Skills</h2>
-          <p className="section-subtitle">My proficiency levels in various technologies and tools</p>
+          <p className="section-subtitle">My skills in various technologies and tools</p>
         </div>
         
         <div className="skills-grid-wrapper">
