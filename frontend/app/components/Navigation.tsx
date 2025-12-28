@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 interface Profile {
   id: number;

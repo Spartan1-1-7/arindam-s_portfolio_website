@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 interface Profile {
   id: number;

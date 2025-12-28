@@ -1,74 +1,141 @@
-# Deployment Guide
+# Deployment Guide - Vercel + Render
 
-## Environment Variables
+## ✅ Code is Ready! Follow these steps:
 
-Copy `.env.example` to `.env` and update the values:
+## 1. Deploy Backend to Render
 
+### Step 1: Push to GitHub (if not done)
 ```bash
-cp .env.example .env
+git add .
+git commit -m "Prepare for deployment"
+git push
 ```
 
-### Required Variables
+### Step 2: Create Render Web Service
+1. Go to https://render.com → Sign up with GitHub
+2. Click "New +" → "Web Service"
+3. Connect your GitHub repository
+4. Configure:
+   - **Name**: `your-portfolio-backend`
+   - **Environment**: Python 3
+   - **Build Command**: `./build.sh`
+   - **Start Command**: `gunicorn backend.wsgi:application`
+   - **Instance Type**: Free
 
-- `DJANGO_SECRET_KEY`: Generate a new secret key for production
-- `DEBUG`: Set to `False` for production
-- `ALLOWED_HOSTS`: Comma-separated list of allowed domains
-- `CORS_ALLOWED_ORIGINS`: Comma-separated list of frontend URLs
+### Step 3: Add Environment Variables in Render
+In "Environment" tab, add these:
 
-## Local Development
-
-1. Install Python dependencies:
-```bash
-pip install -r requirements.txt
+```
+SECRET_KEY=<generate-using-command-below>
+DEBUG=False
+DATABASE_URL=<your-supabase-connection-string>
+ALLOWED_HOSTS=your-app-name.onrender.com
+CORS_ALLOWED_ORIGINS=https://placeholder.vercel.app
+PYTHON_VERSION=3.11
 ```
 
-2. Install Node dependencies:
+**Generate SECRET_KEY:**
 ```bash
-cd frontend
-npm install
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-3. Run migrations:
-```bash
-python manage.py migrate
+**Get DATABASE_URL from Supabase:**
+- Go to Supabase → Settings → Database → Connection Pooling
+- Copy the connection string (format: `postgresql://user:password@host:port/database`)
+
+### Step 4: Deploy Backend
+- Click "Create Web Service"
+- Wait 5-10 minutes
+- Save your backend URL: `https://your-app-name.onrender.com`
+
+---
+
+## 2. Deploy Frontend to Vercel
+
+### Step 1: Create Vercel Project
+1. Go to https://vercel.com → Sign up with GitHub
+2. Click "Add New" → "Project"
+3. Import your GitHub repository
+
+### Step 2: Configure Build Settings
+1. **Framework**: Next.js (auto-detected)
+2. **Root Directory**: `frontend`
+3. **Build Command**: Leave default
+4. **Output Directory**: Leave default
+
+### Step 3: Add Environment Variable
+In "Environment Variables" section:
 ```
-
-4. Create superuser:
-```bash
-python manage.py createsuperuser
+NEXT_PUBLIC_API_URL=https://your-backend-name.onrender.com
 ```
+(Use the URL from Render deployment)
 
-5. Start the application:
-```bash
-./start.sh
-```
+### Step 4: Deploy Frontend
+- Click "Deploy"
+- Wait 2-3 minutes
+- Your site is live at: `https://your-project.vercel.app`
 
-## Production Deployment
+---
 
-### Backend (Django)
+## 3. Final Step - Update Backend CORS
 
-1. Set environment variables
-2. Run migrations: `python manage.py migrate`
-3. Collect static files: `python manage.py collectstatic`
-4. Use a production WSGI server (gunicorn, uwsgi)
+1. Go back to Render dashboard
+2. Edit environment variable:
+   ```
+   CORS_ALLOWED_ORIGINS=https://your-actual-vercel-url.vercel.app
+   ```
+3. Save (will trigger automatic redeploy)
 
-### Frontend (Next.js)
+---
 
-1. Build: `cd frontend && npm run build`
-2. Start: `npm start` or deploy to Vercel/Netlify
+## 4. Test Everything
 
-### Recommended Platforms
+✅ Visit your Vercel URL  
+✅ Check if portfolio data loads  
+✅ Test navigation between pages  
+✅ Try Django admin: `https://your-backend.onrender.com/admin`
 
-- **Backend**: Railway, Render, Heroku, DigitalOcean
-- **Frontend**: Vercel, Netlify, Cloudflare Pages
-- **Database**: PostgreSQL on Render, Supabase, or PlanetScale
+---
 
-## Security Checklist
+## Troubleshooting
 
-- [ ] Set strong SECRET_KEY
-- [ ] Set DEBUG=False in production
-- [ ] Configure ALLOWED_HOSTS properly
-- [ ] Set specific CORS_ALLOWED_ORIGINS (not *)
-- [ ] Use HTTPS in production
-- [ ] Use environment variables for sensitive data
-- [ ] Keep dependencies updated
+### Backend doesn't start?
+- Check Render logs (Dashboard → Logs)
+- Verify DATABASE_URL format is correct
+- Make sure all environment variables are set
+
+### Frontend shows no data?
+- Check browser console for errors
+- Verify NEXT_PUBLIC_API_URL is correct
+- Check Vercel deployment logs
+
+### CORS errors?
+- Ensure CORS_ALLOWED_ORIGINS exactly matches your Vercel URL
+- Include `https://` prefix
+- No trailing slash
+
+---
+
+## Optional: Custom Domain
+
+### Vercel (Frontend):
+Settings → Domains → Add your domain
+
+### Render (Backend):  
+Settings → Custom Domain → Add subdomain (api.yourdomain.com)
+
+Then update CORS_ALLOWED_ORIGINS with your custom domain.
+
+---
+
+## 💰 Cost: **$0/month**
+- Render: Free tier
+- Vercel: Free tier  
+- Supabase: Free tier
+
+---
+
+## Need Help?
+- Render docs: https://render.com/docs
+- Vercel docs: https://vercel.com/docs
+- Check deployment logs for errors
