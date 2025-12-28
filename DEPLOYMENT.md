@@ -31,7 +31,7 @@ DEBUG=False
 DATABASE_URL=<your-supabase-connection-string>
 ALLOWED_HOSTS=your-app-name.onrender.com
 CORS_ALLOWED_ORIGINS=https://placeholder.vercel.app
-PYTHON_VERSION=3.11
+PYTHON_VERSION=3.11.0
 ```
 
 **Generate SECRET_KEY:**
