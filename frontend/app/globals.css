@@ -77,6 +77,8 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  /* iOS Safari momentum scrolling for entire page */
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -85,7 +87,9 @@ body {
   color: var(--text);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
+  /* iOS Safari viewport fix - use svh for dynamic address bar */
   min-height: 100vh;
+  min-height: 100svh;
   overflow-x: hidden;
 }
 
@@ -105,7 +109,12 @@ body {
   text-shadow: 0 0 10px var(--terminal-glow);
 }
 
-main { padding-top: 80px; }
+main { 
+  padding-top: 80px;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
+  min-height: 0;
+}
 
 /* Animated Background */
 .particles-bg {
@@ -403,10 +412,14 @@ pre code {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
 }
 
 .section {
   padding: 5rem 0;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
 }
 
 .page-container {
@@ -450,10 +463,14 @@ pre code {
 
 /* Hero Section */
 .hero-section {
+  /* iOS Safari viewport fix - use svh for dynamic address bar */
   min-height: calc(100vh - 80px);
+  min-height: calc(100svh - 80px);
   display: flex;
   align-items: center;
   padding: 4rem 0;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
 }
 
 .hero-content {
@@ -461,6 +478,8 @@ pre code {
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: center;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
 }
 
 .hero-text {
@@ -619,6 +638,8 @@ pre code {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
 }
 
 .project-card {
@@ -750,6 +771,8 @@ a:focus {
   margin-right: -50vw;
   padding: 0 2rem;
   overflow: visible;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
 }
 
 .skills-grid {
@@ -764,6 +787,11 @@ a:focus {
   padding-bottom: 1rem;
   scroll-behavior: smooth;
   align-items: start;
+  /* iOS Safari momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
+  min-height: 0;
 }
 
 .skills-grid::-webkit-scrollbar {
@@ -805,10 +833,8 @@ a:focus {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  /* iOS Safari flexbox fix - prevent layout collapse */
+  flex-shrink: 0;
   gap: 0.75rem;
   flex-shrink: 0;
 }
@@ -830,6 +856,8 @@ a:focus {
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
+  /* iOS Safari flexbox scroll fix */
+  min-width: 0;
 }
 
 .back-link {
@@ -1280,7 +1308,9 @@ a:focus {
     top: 70px;
     left: -100%; /* Fully hide off-screen on the left */
     width: 280px;
+    /* iOS Safari viewport fix - use svh for dynamic address bar */
     height: calc(100vh - 70px);
+    height: calc(100svh - 70px);
     background: var(--bg);
     border-right: 1px solid var(--border); /* Changed from border-left */
     box-shadow: 4px 0 20px var(--shadow); /* Adjust shadow direction */
@@ -1291,6 +1321,8 @@ a:focus {
     gap: 0.5rem;
     transition: left 0.3s ease; /* Changed from right transition */
     overflow-y: auto;
+    /* iOS Safari momentum scrolling */
+    -webkit-overflow-scrolling: touch;
     z-index: 1000;
   }
 
