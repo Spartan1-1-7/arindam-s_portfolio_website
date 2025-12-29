@@ -4,9 +4,9 @@ class Profile(models.Model):
     name = models.CharField(max_length=200)
     tagline = models.CharField(max_length=300)  # e.g., "AI/ML Specialist & Computer Science Student"
     bio = models.TextField()  # Main bio/description
-    profile_image = models.URLField(max_length=500, blank=True, null=True)  # Supabase Storage URL
-    about_image = models.URLField(max_length=500, blank=True, null=True)  # Supabase Storage URL
-    resume_url = models.URLField(max_length=500, blank=True, null=True)  # Supabase Storage URL
+    profile_image = models.CharField(max_length=500, blank=True, null=True)  # Supabase Storage URL
+    about_image = models.CharField(max_length=500, blank=True, null=True)  # Supabase Storage URL
+    resume_url = models.CharField(max_length=500, blank=True, null=True)  # Supabase Storage URL
     
     def __str__(self):
         return self.name
@@ -21,7 +21,7 @@ class Project(models.Model):
     technologies = models.CharField(max_length=500)
     github_url = models.URLField(blank=True)
     demo_url = models.URLField(blank=True)
-    image = models.URLField(max_length=500, blank=True, null=True)  # Supabase Storage URL
+    image = models.CharField(max_length=500, blank=True, null=True)  # Supabase Storage URL
     category = models.CharField(max_length=100, default='')
     order = models.IntegerField(default=0, help_text='Higher numbers appear first')
     
