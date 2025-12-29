@@ -343,9 +343,9 @@ export default function Home() {
               <h1 className="hero-title">
                 Hello, I'm <span className="gradient-text">{profile?.name || 'Arindam Shukla'}</span><span className="terminal-cursor"></span>
               </h1>
-              <p className="hero-subtitle">{profile?.tagline || 'AI/ML Specialist & Computer Science Student'}</p>
+              <p className="hero-subtitle">{profile?.tagline || ''}</p>
               <p className="hero-description">
-                {profile?.bio || 'Specializing in Machine Learning, Deep Learning, and Data Science solutions.'}
+                {profile?.bio || ''}
               </p>
               <div className="hero-buttons">
                 <Link href="/projects" className="btn btn-primary">
@@ -424,9 +424,11 @@ export default function Home() {
                 <Link href="/#skills" className="btn btn-outline">
                   Learn More
                 </Link>
-                <a href={profile?.resume_url || '/resume.pdf'} className="btn btn-primary" download>
-                  Download Resume
-                </a>
+                {profile?.resume_url && (
+                  <a href={profile.resume_url} className="btn btn-primary" download>
+                    Download Resume
+                  </a>
+                )}
               </div>
             </div>
           </div>
