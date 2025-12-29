@@ -1,6 +1,7 @@
 import './globals.css'
 import { ThemeProvider } from './context/ThemeContext'
 import Navigation from './components/Navigation'
+import AppWrapper from './components/AppWrapper'
 
 export const metadata = {
   title: 'Arindam Shukla - AI/ML Specialist',
@@ -15,11 +16,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ThemeProvider>
-          <div className="particles-bg"></div>
-          <Navigation />
-          <main>{children}</main>
-        </ThemeProvider>
+        <AppWrapper>
+          <ThemeProvider>
+            <div className="particles-bg"></div>
+            <Navigation />
+            <main>{children}</main>
+          </ThemeProvider>
+        </AppWrapper>
       </body>
     </html>
   )

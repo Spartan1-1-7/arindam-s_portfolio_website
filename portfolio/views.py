@@ -45,3 +45,11 @@ def contact_submit(request):
         return Response({'message': 'Message sent successfully!'}, status=201)
     return Response(serializer.errors, status=400)
 
+@api_view(['GET'])
+def health_check(request):
+    """
+    Lightweight health check endpoint for frontend to verify backend is awake.
+    Returns immediately with minimal processing.
+    """
+    return Response({'status': 'ok'}, status=200)
+

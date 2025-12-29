@@ -13,5 +13,6 @@ router.register(r'education', views.EducationViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('contact/', views.contact_submit, name='contact_submit'),
+    path('health/', views.health_check, name='health_check'),
 ]
 
