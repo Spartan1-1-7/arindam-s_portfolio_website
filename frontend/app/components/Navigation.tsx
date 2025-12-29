@@ -20,6 +20,7 @@ export default function Navigation() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [hash, setHash] = useState('');
   const [activeSection, setActiveSection] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Update hash on mount and when it changes
@@ -32,6 +33,29 @@ export default function Navigation() {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isMobileMenuOpen && !target.closest('.nav-container')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   // Track scroll position to detect active section
   useEffect(() => {
@@ -93,7 +117,17 @@ export default function Navigation() {
 
   return (
     <nav className="nav">
+      {/* Theme toggle - always in top right corner */}
+      <button
+        onClick={toggleTheme}
+        className="theme-toggle theme-toggle-fixed"
+        aria-label="Toggle theme"
+      >
+        {theme === 'light' ? '🌙' : '☀️'}
+      </button>
+
       <div className="nav-container">
+        {/* Logo first (leftmost) */}
         <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
           {profile?.profile_image ? (
             <img 
@@ -112,8 +146,23 @@ export default function Navigation() {
             <div className="logo-circle">{getInitials()}</div>
           )}
         </Link>
+
+        {/* Hamburger Menu Button (Mobile Only) - next to logo */}
+        <button
+          className={`hamburger ${isMobileMenuOpen ? 'active' : ''}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsMobileMenuOpen(!isMobileMenuOpen);
+          }}
+          aria-label="Toggle navigation menu"
+          aria-expanded={isMobileMenuOpen}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
         
-        <div className="nav-links">
+        <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
           {navItems.map((item) => {
             let isActive = false;
             
@@ -134,27 +183,31 @@ export default function Navigation() {
                 key={item.path}
                 href={item.path}
                 className={`nav-link ${isActive ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
             );
           })}
           {profile?.resume_url ? (
-            <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+            <a 
+              href={profile.resume_url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn btn-primary"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               Resume
             </a>
           ) : (
-            <Link href="/#resume" className="btn btn-primary">
+            <Link 
+              href="/#resume" 
+              className="btn btn-primary"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               Resume
             </Link>
           )}
-          <button
-            onClick={toggleTheme}
-            className="theme-toggle"
-            aria-label="Toggle theme"
-          >
-            {theme === 'light' ? '🌙' : '☀️'}
-          </button>
         </div>
       </div>
     </nav>
