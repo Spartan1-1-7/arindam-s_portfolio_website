@@ -410,15 +410,19 @@ export default function Home() {
               )}
             </div>
             <div className="about-text">
-              <h3>Computer Science Student specializing in AI & ML</h3>
-              
-              <div className="education-info">
-                <h4 className="info-title">Education</h4>
-                <p className="info-text">
-                  Bachelor of Technology in Computer Science and Technology with Specialization in Artificial Intelligence
-                </p>
-                <p className="info-subtext">University of Lucknow</p>
-              </div>
+              {profile?.bio && (
+                <>
+                  <h3>Computer Science Student specializing in AI & ML</h3>
+                  
+                  <div className="education-info">
+                    <h4 className="info-title">Education</h4>
+                    <p className="info-text">
+                      Bachelor of Technology in Computer Science and Technology with Specialization in Artificial Intelligence
+                    </p>
+                    <p className="info-subtext">University of Lucknow</p>
+                  </div>
+                </>
+              )}
               
               <div className="about-buttons">
                 <Link href="/#skills" className="btn btn-outline">
@@ -507,106 +511,7 @@ export default function Home() {
                   </div>
                 );
               })
-            ) : (
-              // Fallback hardcoded projects if no data in database
-              <>
-            <div className="project-card">
-              <div className="project-image">
-                <span className="project-badge badge-ml">Machine Learning</span>
-              </div>
-              <div className="project-content">
-                <h3>Sentiment Analysis with BERT</h3>
-                <p>Fine-tuned BERT model for sentiment classification on movie reviews, achieving 95% accuracy on IMDB dataset.</p>
-                <div className="project-tags">
-                  <span className="tag">Python</span>
-                  <span className="tag">TensorFlow</span>
-                  <span className="tag">BERT</span>
-                  <span className="tag">+More</span>
-                </div>
-                <div className="project-links">
-                  <a href="#" className="project-link" onClick={(e) => { e.preventDefault(); setShowModal(true); }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="16" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    Check Out
-                  </a>
-                  <a href="#" className="project-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.840 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="project-card">
-              <div className="project-image">
-                <span className="project-badge badge-dl">Deep Learning</span>
-              </div>
-              <div className="project-content">
-                <h3>Image Classification CNN</h3>
-                <p>Convolutional Neural Network for classifying images across 10 categories with data augmentation.</p>
-                <div className="project-tags">
-                  <span className="tag">Python</span>
-                  <span className="tag">PyTorch</span>
-                  <span className="tag">OpenCV</span>
-                  <span className="tag">+More</span>
-                </div>
-                <div className="project-links">
-                  <a href="#" className="project-link" onClick={(e) => { e.preventDefault(); setShowModal(true); }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="16" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    Check Out
-                  </a>
-                  <a href="#" className="project-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.840 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="project-card">
-              <div className="project-image">
-                <span className="project-badge badge-ds">Data Science</span>
-              </div>
-              <div className="project-content">
-                <h3>Customer Segmentation Analysis</h3>
-                <p>K-means clustering analysis on e-commerce customer data to identify distinct customer segments.</p>
-                <div className="project-tags">
-                  <span className="tag">Python</span>
-                  <span className="tag">Scikit-learn</span>
-                  <span className="tag">Pandas</span>
-                  <span className="tag">+More</span>
-                </div>
-                <div className="project-links">
-                  <a href="#" className="project-link" onClick={(e) => { e.preventDefault(); setShowModal(true); }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="16" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    Check Out
-                  </a>
-                  <a href="#" className="project-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.840 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-            </>
-            )}
+            ) : null}
           </div>
 
           <div className="section-cta">
@@ -660,69 +565,7 @@ export default function Home() {
                   </Link>
                 ))}
               </>
-            ) : (
-              <>
-                <div className="skill-card">
-                  <div className="skill-icon">🐍</div>
-                  <h3>Python</h3>
-                  <p>Programming</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">🔥</div>
-                  <h3>TensorFlow</h3>
-                  <p>ML Framework</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">⚡</div>
-                  <h3>PyTorch</h3>
-                  <p>ML Framework</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">🤖</div>
-                  <h3>Scikit-learn</h3>
-                  <p>ML Framework</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">🐼</div>
-                  <h3>Pandas</h3>
-                  <p>Data Analysis</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">🔢</div>
-                  <h3>NumPy</h3>
-                  <p>Data Analysis</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">💾</div>
-                  <h3>SQL</h3>
-                  <p>Database</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">🐳</div>
-                  <h3>Docker</h3>
-                  <p>DevOps</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">📝</div>
-                  <h3>Git</h3>
-                  <p>Version Control</p>
-                </div>
-                
-                <div className="skill-card">
-                  <div className="skill-icon">📓</div>
-                  <h3>Jupyter</h3>
-                  <p>Tools</p>
-                </div>
-              </>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
@@ -746,28 +589,7 @@ export default function Home() {
                   </div>
                 </div>
               ))
-            ) : (
-              // Fallback hardcoded experience
-              <>
-            <div className="timeline-item">
-              <div className="timeline-content">
-                <span className="timeline-date">2024 - Present | Remote</span>
-                <h3>Machine Learning Engineer</h3>
-                <h4>Tech Company</h4>
-                <p>Developing and deploying ML models for production. Built recommender systems and NLP pipelines.</p>
-              </div>
-            </div>
-            
-            <div className="timeline-item">
-              <div className="timeline-content">
-                <span className="timeline-date">2023 - 2024 | San Francisco, CA</span>
-                <h3>Data Science Intern</h3>
-                <h4>Startup Inc</h4>
-                <p>Analyzed customer data, built predictive models, and created dashboards for business insights.</p>
-              </div>
-            </div>
-            </>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
@@ -807,26 +629,7 @@ export default function Home() {
                   )}
                 </div>
               ))
-            ) : (
-              // Fallback hardcoded achievements
-              <>
-            <div className="achievement-card">
-              <div className="achievement-icon">🏆</div>
-              <h3>Best ML Project Award</h3>
-              <span className="achievement-year">2024</span>
-              <p>Won first place in university ML competition for sentiment analysis project.</p>
-              <span className="achievement-location">📍 University Name</span>
-            </div>
-            
-            <div className="achievement-card">
-              <div className="achievement-icon">📄</div>
-              <h3>Research Paper Published</h3>
-              <span className="achievement-year">2023</span>
-              <p>Published paper on deep learning applications in IEEE conference.</p>
-              <span className="achievement-location">📍 IEEE Conference</span>
-            </div>
-            </>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
@@ -850,7 +653,7 @@ export default function Home() {
           <div className="footer-content">
             <div className="footer-info">
               <h3>Arindam Shukla</h3>
-              <p>AI/ML Specialist and Computer Science Student</p>
+              {profile?.tagline && <p>{profile.tagline}</p>}
             </div>
             <div className="footer-social">
               <a href="https://github.com/Spartan1-1-7" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
