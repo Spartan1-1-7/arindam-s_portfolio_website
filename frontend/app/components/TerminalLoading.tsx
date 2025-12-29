@@ -116,9 +116,11 @@ const TerminalLoading: React.FC<TerminalLoadingProps> = ({ onReady }) => {
                   achievementsRes.json()
                 ]);
 
+                console.log('✅ All API data loaded successfully');
                 // All data loaded successfully
                 setIsDataLoaded(true);
-                sessionStorage.setItem('backend_ready', 'true');
+              } else {
+                console.log('❌ Some API requests failed, retrying...');
               }
             } catch (dataError) {
               console.log('Error loading data, retrying...');
@@ -152,6 +154,7 @@ const TerminalLoading: React.FC<TerminalLoadingProps> = ({ onReady }) => {
   // Trigger transition only when both animation is complete AND data is loaded
   useEffect(() => {
     if (isTypingComplete && isDataLoaded) {
+      console.log('🎉 Animation complete + data loaded, transitioning to homepage');
       onReady();
     }
   }, [isTypingComplete, isDataLoaded, onReady]);
