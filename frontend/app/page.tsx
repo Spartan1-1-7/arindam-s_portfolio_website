@@ -118,14 +118,23 @@ export default function Home() {
       // Since we have exact duplicates, the reset point is exactly half the scrollWidth
       const resetPoint = Math.floor(gridElement.scrollWidth / 2);
 
+      // iOS Safari fix: Use scrollTo with smooth behavior instead of direct scrollLeft
+      let currentScroll = 0;
+      
       const scroll = () => {
         if (!isPausedRef.current && gridElement) {
-          gridElement.scrollLeft += 1;
+          currentScroll += 1;
           
           // Reset to 0 when we hit the halfway point (where duplicates start)
-          if (gridElement.scrollLeft >= resetPoint) {
-            gridElement.scrollLeft = 0;
+          if (currentScroll >= resetPoint) {
+            currentScroll = 0;
           }
+          
+          // iOS Safari fix: Use scrollTo method for better compatibility
+          gridElement.scrollTo({
+            left: currentScroll,
+            behavior: 'auto' // Use 'auto' for instant scroll, not 'smooth'
+          });
         }
       };
 
@@ -139,14 +148,29 @@ export default function Home() {
         isPausedRef.current = false;
       };
 
+      const handleTouchStart = () => {
+        isPausedRef.current = true;
+      };
+
+      const handleTouchEnd = () => {
+        // Resume after a short delay on mobile
+        setTimeout(() => {
+          isPausedRef.current = false;
+        }, 2000);
+      };
+
       gridElement.addEventListener('mouseenter', handleMouseEnter);
       gridElement.addEventListener('mouseleave', handleMouseLeave);
+      gridElement.addEventListener('touchstart', handleTouchStart, { passive: true });
+      gridElement.addEventListener('touchend', handleTouchEnd, { passive: true });
 
       // Store for cleanup
       (gridElement as any)._scrollCleanup = () => {
         clearInterval(intervalId);
         gridElement.removeEventListener('mouseenter', handleMouseEnter);
         gridElement.removeEventListener('mouseleave', handleMouseLeave);
+        gridElement.removeEventListener('touchstart', handleTouchStart);
+        gridElement.removeEventListener('touchend', handleTouchEnd);
       };
     }, 100);
 

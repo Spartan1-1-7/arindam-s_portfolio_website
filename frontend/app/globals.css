@@ -787,8 +787,9 @@ a:focus {
   padding-bottom: 1rem;
   scroll-behavior: smooth;
   align-items: start;
-  /* iOS Safari momentum scrolling */
-  -webkit-overflow-scrolling: touch;
+  /* iOS Safari momentum scrolling - disabled for auto-scroll compatibility */
+  /* Use CSS scroll-snap instead for better JS scroll control */
+  -webkit-overflow-scrolling: auto;
   /* iOS Safari flexbox scroll fix */
   min-width: 0;
   min-height: 0;
