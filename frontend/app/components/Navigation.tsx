@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTheme } from '../context/ThemeContext';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useProfile } from '../hooks/useAPI';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -17,7 +19,7 @@ interface Profile {
 export default function Navigation() {
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const { profile } = useProfile();
   const [hash, setHash] = useState('');
   const [activeSection, setActiveSection] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -84,17 +86,6 @@ export default function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [pathname]);
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/profile/`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.length > 0) {
-          setProfile(data[0]);
-        }
-      })
-      .catch(error => console.error('Error fetching profile:', error));
-  }, []);
-
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/#about' },
@@ -130,17 +121,18 @@ export default function Navigation() {
         {/* Logo first (leftmost) */}
         <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }}>
           {profile?.profile_image ? (
-            <img 
+            <Image 
               src={profile.profile_image} 
               alt={profile.name || 'Profile'} 
+              width={50}
+              height={50}
               className="logo-image"
               style={{
-                width: '50px',
-                height: '50px',
                 borderRadius: '50%',
                 objectFit: 'cover',
                 display: 'block'
               }}
+              priority
             />
           ) : (
             <div className="logo-circle">{getInitials()}</div>

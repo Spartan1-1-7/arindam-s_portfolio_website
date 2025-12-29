@@ -1,0 +1,23 @@
+
+> frontend@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+Failed to compile.
+
+./app/page.tsx:62:25
+Type error: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+
+[0m [90m 60 |[39m   [36mconst[39m [animationStep[33m,[39m setAnimationStep] [33m=[39m useState[33m<[39m[33mnumber[39m[33m>[39m([35m0[39m)[33m;[39m[0m
+[0m [90m 61 |[39m   [36mconst[39m [showModal[33m,[39m setShowModal] [33m=[39m useState([36mfalse[39m)[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 62 |[39m   [36mconst[39m skillsGridRef [33m=[39m [33mReact[39m[33m.[39museRef[33m<[39m[33mHTMLDivElement[39m[33m>[39m([36mnull[39m)[33m;[39m[0m
+[0m [90m    |[39m                         [31m[1m^[22m[39m[0m
+[0m [90m 63 |[39m   [36mconst[39m isPausedRef [33m=[39m [33mReact[39m[33m.[39museRef([36mfalse[39m)[33m;[39m[0m
+[0m [90m 64 |[39m[0m
+[0m [90m 65 |[39m   [90m// Use consolidated home data endpoint (1 API call instead of 5)[39m[0m
+Next.js build worker exited with code: 1 and signal: null

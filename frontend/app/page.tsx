@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import React from 'react';
+import Image from 'next/image';
+import { useEffect, useState, useRef } from 'react';
+import { useHomeData } from './hooks/useAPI';
 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -57,50 +58,12 @@ interface Achievement {
 
 export default function Home() {
   const [animationStep, setAnimationStep] = useState<number>(0);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [skills, setSkills] = useState<Skill[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const skillsGridRef = React.useRef<HTMLDivElement>(null);
-  const isPausedRef = React.useRef(false);
+  const skillsGridRef = useRef<HTMLDivElement>(null);
+  const isPausedRef = useRef(false);
 
-  useEffect(() => {
-    // Fetch profile data
-    fetch(`${API_BASE_URL}/api/profile/`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.length > 0) {
-          setProfile(data[0]); // Get first profile
-        }
-      })
-      .catch(error => console.error('Error fetching profile:', error));
-
-    // Fetch skills data
-    fetch(`${API_BASE_URL}/api/skills/`)
-      .then(res => res.json())
-      .then(data => setSkills(data))
-      .catch(error => console.error('Error fetching skills:', error));
-
-    // Fetch projects data (first 3 for featured)
-    fetch(`${API_BASE_URL}/api/projects/`)
-      .then(res => res.json())
-      .then(data => setProjects(data.slice(0, 3)))
-      .catch(error => console.error('Error fetching projects:', error));
-
-    // Fetch experiences data
-    fetch(`${API_BASE_URL}/api/experience/`)
-      .then(res => res.json())
-      .then(data => setExperiences(data))
-      .catch(error => console.error('Error fetching experiences:', error));
-
-    // Fetch achievements data
-    fetch(`${API_BASE_URL}/api/achievements/`)
-      .then(res => res.json())
-      .then(data => setAchievements(data))
-      .catch(error => console.error('Error fetching achievements:', error));
-  }, []);
+  // Use consolidated home data endpoint (1 API call instead of 5)
+  const { profile, skills, projects, experiences, achievements } = useHomeData();
 
   // Auto-scroll effect for skills
   useEffect(() => {
@@ -417,15 +380,20 @@ export default function Home() {
           <div className="about-content">
             <div className="about-image">
               {profile?.about_image ? (
-                <img 
+                <Image 
                   src={profile.about_image} 
-                  alt={profile.name} 
+                  alt={profile.name}
+                  width={400}
+                  height={500}
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
                     borderRadius: '20px'
                   }}
+                  priority
+                  placeholder="blur"
+                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwMCIgZmlsbD0iIzIyMjIyMiIvPjwvc3ZnPg=="
                 />
               ) : (
                 <div className="image-placeholder">
@@ -471,7 +439,7 @@ export default function Home() {
           
           <div className="projects-grid">
             {projects.length > 0 ? (
-              projects.map((project) => {
+              projects.map((project: Project) => {
                 const getCategoryBadgeClass = (category: string) => {
                   const categoryMap: { [key: string]: string } = {
                     'Machine Learning': 'badge-ml',
@@ -557,12 +525,12 @@ export default function Home() {
           <div className="skills-grid" ref={skillsGridRef}>
             {skills.length > 0 ? (
               <>
-                {skills.map((skill) => (
+                {skills.map((skill: Skill) => (
                   <Link href="/skills" key={skill.id} style={{textDecoration: 'none', color: 'inherit'}}>
                     <div className="skill-card">
                       <div className="skill-icon">
                         {skill.icon.includes('http') || skill.icon.includes('.') ? (
-                          <img src={skill.icon} alt={skill.name} style={{width: '40px', height: '40px'}} />
+                          <Image src={skill.icon} alt={skill.name} width={40} height={40} style={{objectFit: 'contain'}} />
                         ) : (
                           skill.icon
                         )}
@@ -573,12 +541,12 @@ export default function Home() {
                   </Link>
                 ))}
                 {/* Duplicate for infinite loop */}
-                {skills.map((skill) => (
+                {skills.map((skill: Skill) => (
                   <Link href="/skills" key={`duplicate-${skill.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
                     <div className="skill-card">
                       <div className="skill-icon">
                         {skill.icon.includes('http') || skill.icon.includes('.') ? (
-                          <img src={skill.icon} alt={skill.name} style={{width: '40px', height: '40px'}} />
+                          <Image src={skill.icon} alt={skill.name} width={40} height={40} style={{objectFit: 'contain'}} />
                         ) : (
                           skill.icon
                         )}
@@ -601,7 +569,7 @@ export default function Home() {
           
           <div className="timeline">
             {experiences.length > 0 ? (
-              experiences.map((experience) => (
+              experiences.map((experience: Experience) => (
                 <div key={experience.id} className="timeline-item">
                   <div className="timeline-content">
                     <span className="timeline-date">
@@ -625,11 +593,11 @@ export default function Home() {
           
           <div className="achievements-grid">
             {achievements.length > 0 ? (
-              achievements.map((achievement) => (
+              achievements.map((achievement: Achievement) => (
                 <div key={achievement.id} className="achievement-card">
                   <div className="achievement-icon">
                     {achievement.icon && (achievement.icon.includes('http') || achievement.icon.includes('.')) ? (
-                      <img src={achievement.icon} alt={achievement.name} style={{width: '60px', height: '60px', objectFit: 'contain'}} />
+                      <Image src={achievement.icon} alt={achievement.name} width={60} height={60} style={{objectFit: 'contain'}} />
                     ) : (
                       achievement.icon
                     )}

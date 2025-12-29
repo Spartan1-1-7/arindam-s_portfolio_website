@@ -1,7 +1,4 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Image from 'next/image';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -12,15 +9,30 @@ interface Skill {
   icon: string;
 }
 
-export default function SkillsPage() {
-  const [skills, setSkills] = useState<Skill[]>([]);
+// Enable ISR with 300 second (5 minute) revalidation
+export const revalidate = 300;
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/skills/`)
-      .then(res => res.json())
-      .then(data => setSkills(data))
-      .catch(error => console.error('Error fetching skills:', error));
-  }, []);
+// Fetch skills data at build time and revalidate every 5 minutes
+async function getSkills(): Promise<Skill[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/skills/`, {
+      next: { revalidate: 300 }
+    });
+    
+    if (!res.ok) {
+      console.error('Failed to fetch skills');
+      return [];
+    }
+    
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching skills:', error);
+    return [];
+  }
+}
+
+export default async function SkillsPage() {
+  const skills = await getSkills();
 
   return (
     <div className="skills-page">
@@ -37,11 +49,11 @@ export default function SkillsPage() {
         <div className="container">
           <div className="skills-full-grid">
             {skills.length > 0 ? (
-              skills.map((skill) => (
+              skills.map((skill: Skill) => (
                 <div key={skill.id} className="skill-card">
                   <div className="skill-icon">
                     {skill.icon.includes('http') || skill.icon.includes('.') ? (
-                      <img src={skill.icon} alt={skill.name} style={{width: '60px', height: '60px', objectFit: 'contain'}} />
+                      <Image src={skill.icon} alt={skill.name} width={60} height={60} style={{objectFit: 'contain'}} />
                     ) : (
                       <span style={{fontSize: '3rem'}}>{skill.icon}</span>
                     )}

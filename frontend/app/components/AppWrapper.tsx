@@ -1,24 +1,38 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import TerminalLoading from './TerminalLoading';
+import dynamic from 'next/dynamic';
+
+// Dynamically import TerminalLoading to reduce initial bundle size
+const TerminalLoading = dynamic(() => import('./TerminalLoading'), {
+  ssr: false,
+});
 
 interface AppWrapperProps {
   children: React.ReactNode;
 }
 
 const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
-  const [isBackendReady, setIsBackendReady] = useState(false);
+  // Check sessionStorage immediately on mount
+  const [shouldShowLoading, setShouldShowLoading] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('loadingScreenSeen') !== 'true';
+    }
+    return true;
+  });
 
   const handleBackendReady = () => {
-    setIsBackendReady(true);
+    // Mark that loading screen has been shown
+    sessionStorage.setItem('loadingScreenSeen', 'true');
+    setShouldShowLoading(false);
   };
 
-  if (!isBackendReady) {
-    return <TerminalLoading onReady={handleBackendReady} />;
+  // Skip loading screen if already seen in this session
+  if (!shouldShowLoading) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  return <TerminalLoading onReady={handleBackendReady} />;
 };
 
 export default AppWrapper;
