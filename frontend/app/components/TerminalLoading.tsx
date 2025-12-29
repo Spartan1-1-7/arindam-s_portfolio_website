@@ -13,6 +13,7 @@ const TerminalLoading: React.FC<TerminalLoadingProps> = ({ onReady }) => {
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   const [showTimeoutMessage, setShowTimeoutMessage] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const pollingInterval = useRef<NodeJS.Timeout | null>(null);
   const startTime = useRef<number>(Date.now());
 
@@ -72,28 +73,57 @@ const TerminalLoading: React.FC<TerminalLoadingProps> = ({ onReady }) => {
     }
   }, [currentLineIndex, currentCharIndex]);
 
-  // Backend health check polling
+  // Backend health check and data loading
   useEffect(() => {
     if (!isTypingComplete) return;
 
-    const checkBackendHealth = async () => {
+    const checkBackendAndLoadData = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const response = await fetch(`${apiUrl}/api/health/`, {
+        
+        // First check health
+        const healthResponse = await fetch(`${apiUrl}/api/health/`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.status === 'ok') {
-            // Backend is ready
+        if (healthResponse.ok) {
+          const healthData = await healthResponse.json();
+          if (healthData.status === 'ok') {
+            // Backend is awake, now load actual data
             if (pollingInterval.current) {
               clearInterval(pollingInterval.current);
             }
-            // Store ready state in session
-            sessionStorage.setItem('backend_ready', 'true');
-            onReady();
+
+            // Fetch all required data in parallel
+            try {
+              const [profileRes, projectsRes, skillsRes, experienceRes, achievementsRes] = await Promise.all([
+                fetch(`${apiUrl}/api/profile/`),
+                fetch(`${apiUrl}/api/projects/`),
+                fetch(`${apiUrl}/api/skills/`),
+                fetch(`${apiUrl}/api/experience/`),
+                fetch(`${apiUrl}/api/achievements/`)
+              ]);
+
+              // Check if all requests succeeded
+              if (profileRes.ok && projectsRes.ok && skillsRes.ok && experienceRes.ok && achievementsRes.ok) {
+                // Parse the data to ensure it's valid
+                await Promise.all([
+                  profileRes.json(),
+                  projectsRes.json(),
+                  skillsRes.json(),
+                  experienceRes.json(),
+                  achievementsRes.json()
+                ]);
+
+                // All data loaded successfully
+                setIsDataLoaded(true);
+                sessionStorage.setItem('backend_ready', 'true');
+              }
+            } catch (dataError) {
+              console.log('Error loading data, retrying...');
+              // Continue polling if data load fails
+            }
           }
         }
       } catch (error) {
@@ -109,15 +139,22 @@ const TerminalLoading: React.FC<TerminalLoadingProps> = ({ onReady }) => {
     };
 
     // Start polling every 4 seconds
-    checkBackendHealth(); // Check immediately
-    pollingInterval.current = setInterval(checkBackendHealth, 4000);
+    checkBackendAndLoadData(); // Check immediately
+    pollingInterval.current = setInterval(checkBackendAndLoadData, 4000);
 
     return () => {
       if (pollingInterval.current) {
         clearInterval(pollingInterval.current);
       }
     };
-  }, [isTypingComplete, showTimeoutMessage, onReady]);
+  }, [isTypingComplete, showTimeoutMessage]);
+
+  // Trigger transition only when both animation is complete AND data is loaded
+  useEffect(() => {
+    if (isTypingComplete && isDataLoaded) {
+      onReady();
+    }
+  }, [isTypingComplete, isDataLoaded, onReady]);
 
   // Get current line being typed
   const getCurrentTypingLine = () => {
