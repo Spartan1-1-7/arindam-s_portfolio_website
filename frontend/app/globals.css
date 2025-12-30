@@ -493,18 +493,18 @@ pre code {
 }
 
 .terminal-cursor {
-  display: inline-block;
-  width: 10px;
-  height: 0.9em;
-  background-color: #2563EB;
-  margin-left: 0.15rem;
-  animation: blink 1s step-end infinite;
-  vertical-align: baseline;
+  display: inline-block !important;
+  width: 10px !important;
+  height: 0.9em !important;
+  background-color: #2563EB !important;
+  margin-left: 0.15rem !important;
+  animation: blink 1s step-end infinite !important;
+  vertical-align: baseline !important;
 }
 
 [data-theme="dark"] .terminal-cursor {
-  background-color: #00FF66;
-  box-shadow: 0 0 8px #00FF66;
+  background-color: #00FF66 !important;
+  box-shadow: 0 0 8px #00FF66 !important;
 }
 
 .hero-subtitle {
