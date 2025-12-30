@@ -494,17 +494,17 @@ pre code {
 
 .terminal-cursor {
   display: inline-block;
-  width: 3px;
-  height: 1em;
-  background-color: var(--primary);
-  margin-right: 0.25rem;
+  width: 10px;
+  height: 0.9em;
+  background-color: #2563EB;
+  margin-left: 0.15rem;
   animation: blink 1s step-end infinite;
-  vertical-align: text-bottom;
+  vertical-align: baseline;
 }
 
 [data-theme="dark"] .terminal-cursor {
-  background-color: var(--terminal-cursor);
-  box-shadow: 0 0 8px var(--terminal-glow);
+  background-color: #00FF66;
+  box-shadow: 0 0 8px #00FF66;
 }
 
 .hero-subtitle {
@@ -1453,6 +1453,13 @@ a:focus {
   .skills-grid {
     grid-auto-columns: 160px;
     gap: 1rem;
+    justify-content: center;
+  }
+
+  .skills-full-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    justify-items: center;
   }
 
   .skill-card {
@@ -1809,7 +1816,8 @@ a:focus {
   .hero-buttons { justify-content: center; }
   .about-content { grid-template-columns: 1fr; }
   .projects-grid { grid-template-columns: 1fr; }
-  .skills-grid { grid-auto-columns: 160px; gap: 1rem; }
+  .skills-grid { grid-auto-columns: 160px; gap: 1rem; justify-content: center; }
+  .skills-full-grid { grid-template-columns: 1fr; justify-items: center; }
   .contact-wrapper { grid-template-columns: 1fr; }
   .page-title { font-size: 2rem; }
   .section { padding: 3rem 0; }
