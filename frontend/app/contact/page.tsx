@@ -18,6 +18,7 @@ export default function Contact() {
     
     try {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      console.log('Submitting to:', `${API_BASE_URL}/api/contact/`);
       
       const response = await fetch(`${API_BASE_URL}/api/contact/`, {
         method: 'POST',
@@ -33,17 +34,28 @@ export default function Contact() {
       });
 
       console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      console.log('Response headers:', response.headers);
       
-      if (response.status === 201) {
+      // Check for success - 201 Created or 200 OK
+      if (response.ok || response.status === 201) {
+        console.log('✓ Form submitted successfully');
         setStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
+        return;
+      }
+      
+      // If not successful, try to get error details
+      try {
         const data = await response.json();
         console.error('Form submission error:', response.status, data);
-        setStatus('error');
+      } catch (jsonError) {
+        console.error('Could not parse error response:', jsonError);
       }
+      setStatus('error');
+      
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Network error submitting form:', error);
       setStatus('error');
     }
   };
