@@ -32,13 +32,14 @@ export default function Contact() {
         }),
       });
 
-      const data = await response.json();
+      console.log('Response status:', response.status);
       
-      if (response.status === 201 || response.ok) {
+      if (response.status === 201) {
         setStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        console.error('Form submission error:', data);
+        const data = await response.json();
+        console.error('Form submission error:', response.status, data);
         setStatus('error');
       }
     } catch (error) {

@@ -1124,6 +1124,13 @@ a:focus {
   border-color: var(--primary);
 }
 
+/* Keep green border when input has value in dark mode */
+[data-theme="dark"] .form-group input:not(:placeholder-shown),
+[data-theme="dark"] .form-group textarea:not(:placeholder-shown) {
+  border-color: var(--primary);
+  box-shadow: 0 0 5px var(--terminal-glow);
+}
+
 /* Dark mode terminal form input styling */
 [data-theme="dark"] .form-group input,
 [data-theme="dark"] .form-group textarea {
