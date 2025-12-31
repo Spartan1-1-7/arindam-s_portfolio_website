@@ -1094,10 +1094,20 @@ a:focus {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg);
-  color: var(--text);
+  color: var(--text) !important;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
+  -webkit-text-fill-color: var(--text);
+}
+
+/* Fix autofill text color in light mode */
+.form-group input:-webkit-autofill,
+.form-group input:-webkit-autofill:hover,
+.form-group input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .form-group input:focus,
