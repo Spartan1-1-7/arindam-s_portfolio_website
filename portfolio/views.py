@@ -95,7 +95,8 @@ def contact_submit(request):
         print("=" * 50)
         
         try:
-            subject = f"New Contact Form Submission from {contact.name}"
+            email_subject = f"New Contact Form Submission from {contact.name}"
+            subject_line = f"Subject: {contact.subject}" if contact.subject else "No subject"
             message = f"""
 You have received a new message from your portfolio website.
 
@@ -104,6 +105,7 @@ CONTACT DETAILS
 ------------------------------------
 Name: {contact.name}
 Email: {contact.email}
+{subject_line}
 Submitted: {contact.created_at.strftime('%B %d, %Y at %I:%M %p')}
 
 ------------------------------------
@@ -117,7 +119,7 @@ You can reply directly to {contact.email}
 """
             
             result = send_mail(
-                subject=subject,
+                subject=email_subject,
                 message=message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[settings.NOTIFICATION_EMAIL],

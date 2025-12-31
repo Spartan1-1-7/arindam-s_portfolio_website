@@ -27,14 +27,18 @@ export default function Contact() {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          message: `Subject: ${formData.subject}\n\n${formData.message}`,
+          subject: formData.subject,
+          message: formData.message,
         }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+      
+      if (response.status === 201 || response.ok) {
         setStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
+        console.error('Form submission error:', data);
         setStatus('error');
       }
     } catch (error) {
