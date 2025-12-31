@@ -79,9 +79,59 @@ class EducationViewSet(viewsets.ReadOnlyModelViewSet):
 
 @api_view(['POST'])
 def contact_submit(request):
+    from django.core.mail import send_mail
+    from django.conf import settings
+    import traceback
+    
     serializer = ContactSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        contact = serializer.save()
+        
+        # Send email notification
+        print("=" * 50)
+        print("ATTEMPTING TO SEND EMAIL")
+        print(f"From: {settings.DEFAULT_FROM_EMAIL}")
+        print(f"To: {settings.NOTIFICATION_EMAIL}")
+        print("=" * 50)
+        
+        try:
+            subject = f"New Contact Form Submission from {contact.name}"
+            message = f"""
+You have received a new message from your portfolio website.
+
+------------------------------------
+CONTACT DETAILS
+------------------------------------
+Name: {contact.name}
+Email: {contact.email}
+Submitted: {contact.created_at.strftime('%B %d, %Y at %I:%M %p')}
+
+------------------------------------
+MESSAGE
+------------------------------------
+{contact.message}
+
+------------------------------------
+You can reply directly to {contact.email}
+------------------------------------
+"""
+            
+            result = send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.NOTIFICATION_EMAIL],
+                fail_silently=False,
+            )
+            print(f"✓ EMAIL SENT SUCCESSFULLY! Result: {result}")
+            print("=" * 50)
+        except Exception as e:
+            # Log error but don't fail the request
+            print("✗ EMAIL SENDING FAILED!")
+            print(f"Error: {str(e)}")
+            print(traceback.format_exc())
+            print("=" * 50)
+        
         return Response({'message': 'Message sent successfully!'}, status=201)
     return Response(serializer.errors, status=400)
 
