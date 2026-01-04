@@ -79,34 +79,48 @@ class EducationViewSet(viewsets.ReadOnlyModelViewSet):
 
 @api_view(['POST'])
 def contact_submit(request):
-    from django.core.mail import send_mail
-    from django.conf import settings
     import traceback
+    import threading
     
-    serializer = ContactSerializer(data=request.data)
-    if serializer.is_valid():
-        # Save contact to database first
-        try:
-            contact = serializer.save()
-        except Exception as e:
-            print(f"✗ DATABASE SAVE FAILED: {str(e)}")
-            return Response({'message': 'Failed to save message. Please try again.'}, status=500)
-        
-        # Try to send email notification (non-critical)
-        try:
-            # Check if email is configured
-            if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
-                print("⚠ EMAIL NOT CONFIGURED - Skipping email notification")
-            else:
-                print("=" * 50)
-                print("ATTEMPTING TO SEND EMAIL")
-                print(f"From: {settings.DEFAULT_FROM_EMAIL}")
-                print(f"To: {settings.NOTIFICATION_EMAIL}")
-                print("=" * 50)
-                
-                email_subject = f"New Contact Form Submission from {contact.name}"
-                subject_line = f"Subject: {contact.subject}" if contact.subject else "No subject"
-                message = f"""
+    try:
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            # Save contact to database first
+            try:
+                contact = serializer.save()
+                print(f"✓ CONTACT SAVED TO DATABASE - ID: {contact.id}")
+            except Exception as e:
+                print(f"✗ DATABASE SAVE FAILED: {str(e)}")
+                print(traceback.format_exc())
+                return Response({'message': 'Failed to save message. Please try again.'}, status=500)
+            
+            # Send email in background thread to avoid blocking the response
+            def send_email_async():
+                try:
+                    from django.core.mail import send_mail
+                    from django.conf import settings
+                    import socket
+                    
+                    # Check if email is configured
+                    email_user = getattr(settings, 'EMAIL_HOST_USER', '')
+                    email_pass = getattr(settings, 'EMAIL_HOST_PASSWORD', '')
+                    
+                    if not email_user or not email_pass:
+                        print("⚠ EMAIL NOT CONFIGURED - Skipping email notification")
+                        return
+                    
+                    print("=" * 50)
+                    print("ATTEMPTING TO SEND EMAIL (Background Thread)")
+                    print(f"From: {getattr(settings, 'DEFAULT_FROM_EMAIL', email_user)}")
+                    print(f"To: {getattr(settings, 'NOTIFICATION_EMAIL', email_user)}")
+                    print("=" * 50)
+                    
+                    # Set socket default timeout to prevent hanging
+                    socket.setdefaulttimeout(10)
+                    
+                    email_subject = f"New Contact Form Submission from {contact.name}"
+                    subject_line = f"Subject: {contact.subject}" if contact.subject else "No subject"
+                    message = f"""
 You have received a new message from your portfolio website.
 
 ------------------------------------
@@ -126,27 +140,40 @@ MESSAGE
 You can reply directly to {contact.email}
 ------------------------------------
 """
-                
-                result = send_mail(
-                    subject=email_subject,
-                    message=message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[settings.NOTIFICATION_EMAIL],
-                    fail_silently=False,
-                )
-                print(f"✓ EMAIL SENT SUCCESSFULLY! Result: {result}")
-                print("=" * 50)
-        except Exception as e:
-            # Log error but don't fail the request - email is optional
-            print("✗ EMAIL SENDING FAILED (Non-critical)")
-            print(f"Error: {str(e)}")
-            print(traceback.format_exc())
-            print("=" * 50)
-            # Continue anyway - contact was saved successfully
+                    
+                    result = send_mail(
+                        subject=email_subject,
+                        message=message,
+                        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', email_user),
+                        recipient_list=[getattr(settings, 'NOTIFICATION_EMAIL', email_user)],
+                        fail_silently=False,
+                    )
+                    print(f"✓ EMAIL SENT SUCCESSFULLY! Result: {result}")
+                    print("=" * 50)
+                except Exception as e:
+                    print("✗ EMAIL SENDING FAILED (Non-critical)")
+                    print(f"Error: {str(e)}")
+                    print(traceback.format_exc())
+                    print("=" * 50)
+            
+            # Start email sending in background thread
+            email_thread = threading.Thread(target=send_email_async)
+            email_thread.daemon = True  # Thread will be killed when main process exits
+            email_thread.start()
+            
+            # Immediately return success - don't wait for email
+            print("✓ RETURNING SUCCESS RESPONSE (201) - Email will be sent in background")
+            return Response({'message': 'Message sent successfully!'}, status=201)
         
-        # Always return success if contact was saved
-        return Response({'message': 'Message sent successfully!'}, status=201)
-    return Response(serializer.errors, status=400)
+        print(f"✗ SERIALIZER VALIDATION FAILED: {serializer.errors}")
+        return Response(serializer.errors, status=400)
+        
+    except Exception as e:
+        # Catch any unexpected errors
+        print("✗ UNEXPECTED ERROR IN contact_submit")
+        print(f"Error: {str(e)}")
+        print(traceback.format_exc())
+        return Response({'message': 'An unexpected error occurred. Please try again.'}, status=500)
 
 @api_view(['GET'])
 def health_check(request):
