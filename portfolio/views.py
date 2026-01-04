@@ -85,19 +85,28 @@ def contact_submit(request):
     
     serializer = ContactSerializer(data=request.data)
     if serializer.is_valid():
-        contact = serializer.save()
-        
-        # Send email notification
-        print("=" * 50)
-        print("ATTEMPTING TO SEND EMAIL")
-        print(f"From: {settings.DEFAULT_FROM_EMAIL}")
-        print(f"To: {settings.NOTIFICATION_EMAIL}")
-        print("=" * 50)
-        
+        # Save contact to database first
         try:
-            email_subject = f"New Contact Form Submission from {contact.name}"
-            subject_line = f"Subject: {contact.subject}" if contact.subject else "No subject"
-            message = f"""
+            contact = serializer.save()
+        except Exception as e:
+            print(f"✗ DATABASE SAVE FAILED: {str(e)}")
+            return Response({'message': 'Failed to save message. Please try again.'}, status=500)
+        
+        # Try to send email notification (non-critical)
+        try:
+            # Check if email is configured
+            if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
+                print("⚠ EMAIL NOT CONFIGURED - Skipping email notification")
+            else:
+                print("=" * 50)
+                print("ATTEMPTING TO SEND EMAIL")
+                print(f"From: {settings.DEFAULT_FROM_EMAIL}")
+                print(f"To: {settings.NOTIFICATION_EMAIL}")
+                print("=" * 50)
+                
+                email_subject = f"New Contact Form Submission from {contact.name}"
+                subject_line = f"Subject: {contact.subject}" if contact.subject else "No subject"
+                message = f"""
 You have received a new message from your portfolio website.
 
 ------------------------------------
@@ -117,23 +126,25 @@ MESSAGE
 You can reply directly to {contact.email}
 ------------------------------------
 """
-            
-            result = send_mail(
-                subject=email_subject,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.NOTIFICATION_EMAIL],
-                fail_silently=False,
-            )
-            print(f"✓ EMAIL SENT SUCCESSFULLY! Result: {result}")
-            print("=" * 50)
+                
+                result = send_mail(
+                    subject=email_subject,
+                    message=message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[settings.NOTIFICATION_EMAIL],
+                    fail_silently=False,
+                )
+                print(f"✓ EMAIL SENT SUCCESSFULLY! Result: {result}")
+                print("=" * 50)
         except Exception as e:
-            # Log error but don't fail the request
-            print("✗ EMAIL SENDING FAILED!")
+            # Log error but don't fail the request - email is optional
+            print("✗ EMAIL SENDING FAILED (Non-critical)")
             print(f"Error: {str(e)}")
             print(traceback.format_exc())
             print("=" * 50)
+            # Continue anyway - contact was saved successfully
         
+        # Always return success if contact was saved
         return Response({'message': 'Message sent successfully!'}, status=201)
     return Response(serializer.errors, status=400)
 
