@@ -170,13 +170,7 @@ else:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email Configuration (Gmail SMTP)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465  # Changed from 587 to 465 for SSL
-EMAIL_USE_SSL = True  # Changed from EMAIL_USE_TLS to EMAIL_USE_SSL
-EMAIL_TIMEOUT = 10  # Timeout in seconds to prevent hanging
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER', default='noreply@example.com')
-NOTIFICATION_EMAIL = config('NOTIFICATION_EMAIL', default=config('EMAIL_HOST_USER', default=''))
+# Email Configuration (SendGrid)
+SENDGRID_API_KEY = config('SENDGRID_API_KEY', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='arindamshrish@gmail.com')
+NOTIFICATION_EMAIL = config('NOTIFICATION_EMAIL', default='arindamshrish@gmail.com')

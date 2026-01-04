@@ -94,33 +94,29 @@ def contact_submit(request):
                 print(traceback.format_exc())
                 return Response({'message': 'Failed to save message. Please try again.'}, status=500)
             
-            # Send email in background thread to avoid blocking the response
+            # Send email in background thread using SendGrid
             def send_email_async():
                 try:
-                    from django.core.mail import send_mail
+                    from sendgrid import SendGridAPIClient
+                    from sendgrid.helpers.mail import Mail
                     from django.conf import settings
-                    import socket
                     
-                    # Check if email is configured
-                    email_user = getattr(settings, 'EMAIL_HOST_USER', '')
-                    email_pass = getattr(settings, 'EMAIL_HOST_PASSWORD', '')
+                    # Check if SendGrid is configured
+                    api_key = getattr(settings, 'SENDGRID_API_KEY', '')
                     
-                    if not email_user or not email_pass:
-                        print("⚠ EMAIL NOT CONFIGURED - Skipping email notification")
+                    if not api_key:
+                        print("⚠ SENDGRID NOT CONFIGURED - Skipping email notification")
                         return
                     
                     print("=" * 50)
-                    print("ATTEMPTING TO SEND EMAIL (Background Thread)")
-                    print(f"From: {getattr(settings, 'DEFAULT_FROM_EMAIL', email_user)}")
-                    print(f"To: {getattr(settings, 'NOTIFICATION_EMAIL', email_user)}")
+                    print("ATTEMPTING TO SEND EMAIL VIA SENDGRID (Background Thread)")
+                    print(f"From: {settings.DEFAULT_FROM_EMAIL}")
+                    print(f"To: {settings.NOTIFICATION_EMAIL}")
                     print("=" * 50)
-                    
-                    # Set socket default timeout to prevent hanging
-                    socket.setdefaulttimeout(10)
                     
                     email_subject = f"New Contact Form Submission from {contact.name}"
                     subject_line = f"Subject: {contact.subject}" if contact.subject else "No subject"
-                    message = f"""
+                    message_content = f"""
 You have received a new message from your portfolio website.
 
 ------------------------------------
@@ -141,14 +137,18 @@ You can reply directly to {contact.email}
 ------------------------------------
 """
                     
-                    result = send_mail(
+                    message = Mail(
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        to_emails=settings.NOTIFICATION_EMAIL,
                         subject=email_subject,
-                        message=message,
-                        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', email_user),
-                        recipient_list=[getattr(settings, 'NOTIFICATION_EMAIL', email_user)],
-                        fail_silently=False,
+                        plain_text_content=message_content
                     )
-                    print(f"✓ EMAIL SENT SUCCESSFULLY! Result: {result}")
+                    
+                    sg = SendGridAPIClient(api_key)
+                    response = sg.send(message)
+                    
+                    print(f"✓ EMAIL SENT SUCCESSFULLY via SendGrid!")
+                    print(f"Status Code: {response.status_code}")
                     print("=" * 50)
                 except Exception as e:
                     print("✗ EMAIL SENDING FAILED (Non-critical)")
@@ -158,7 +158,7 @@ You can reply directly to {contact.email}
             
             # Start email sending in background thread
             email_thread = threading.Thread(target=send_email_async)
-            email_thread.daemon = True  # Thread will be killed when main process exits
+            email_thread.daemon = True
             email_thread.start()
             
             # Immediately return success - don't wait for email
